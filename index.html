@@ -1,0 +1,37 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#4f46e5" />
+<meta name="description" content="English Club da Gabi — plataforma de inglês básico com vídeos e exercícios para alunos." />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="English Club" />
+<title>English Club da Gabi</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle'%3E%F0%9F%93%9A%3C/text%3E%3C/svg%3E" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+
+<noscript>
+  <div style="padding:2rem;font-family:sans-serif;text-align:center">
+    Este site precisa de JavaScript ativado para funcionar. Por favor, ative o JavaScript no seu navegador.
+  </div>
+</noscript>
+
+<!-- App mounts here -->
+<div id="app">
+  <div class="boot">
+    <div class="boot__logo">📚</div>
+    <div class="boot__spinner" aria-hidden="true"></div>
+    <p class="boot__text">Carregando o English Club…</p>
+  </div>
+</div>
+
+<!-- Overlays -->
+<div id="modal-root"></div>
+<div id="toast-root" aria-live="assertive"></div>
+
+<!-- Scripts (plain scripts, share the window.GSE namespace, load in order) -->
+<script src="assets/js/content.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/app.js"></script>

@@ -1,0 +1,16 @@
+# Vercel
+.vercel
+
+# Dependencies (this project has none — it is pure static)
+node_modules
+
+# Apostila do professor (contém o GABARITO) — não publicar no repositório
+Apostila_Ingles_Basico_A1.pdf
+*.pdf
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+.idea
+.vscode

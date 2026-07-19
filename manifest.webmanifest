@@ -1,0 +1,20 @@
+{
+  "name": "English Club da Gabi",
+  "short_name": "English Club",
+  "description": "Plataforma de inglês básico com vídeos e exercícios para os alunos da professora Gabi.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "assets/img/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
