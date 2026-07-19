@@ -20,7 +20,7 @@ window.GSE = window.GSE || {};
     theme: "gse.theme",
     ver: "gse.version"
   };
-  var DATA_VERSION = 2; // v2: conteúdo migrado para as 10 aulas da apostila (com áudio + reading)
+  var DATA_VERSION = 3; // v3: vocabulário completo da apostila (tabelas + vocabulário corporativo)
 
   /* ---------- low-level JSON storage ---------- */
   function read(key, fallback) {
