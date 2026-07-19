@@ -165,6 +165,179 @@
       '<button class="btn btn--ghost btn--sm mt-2" data-action="toggle-pt">🇧🇷 Tradução</button></div>';
   }
 
+  /* ---------------- speaking (gravar voz + correção automática) ---------------- */
+  // Guarda o áudio gravado (Blob) por usuário+unidade no IndexedDB, para "ficar gravado".
+  var IDB = (function () {
+    var dbp = null, ok = (typeof indexedDB !== "undefined");
+    function open() {
+      if (dbp) return dbp;
+      dbp = new Promise(function (res, rej) {
+        try {
+          var r = indexedDB.open("gse_audio", 1);
+          r.onupgradeneeded = function () { r.result.createObjectStore("rec"); };
+          r.onsuccess = function () { res(r.result); };
+          r.onerror = function () { rej(r.error); };
+        } catch (e) { rej(e); }
+      });
+      return dbp;
+    }
+    function run(mode, fn) {
+      return open().then(function (db) {
+        return new Promise(function (res, rej) {
+          var t = db.transaction("rec", mode), rq = fn(t.objectStore("rec"));
+          t.oncomplete = function () { res(rq ? rq.result : undefined); };
+          t.onerror = function () { rej(t.error); };
+        });
+      });
+    }
+    return {
+      ok: ok,
+      put: function (k, blob) { return run("readwrite", function (s) { return s.put(blob, k); }); },
+      get: function (k) { return run("readonly", function (s) { return s.get(k); }); },
+      del: function (k) { return run("readwrite", function (s) { return s.delete(k); }); }
+    };
+  })();
+
+  var rec = { mediaRec: null, chunks: [], stream: null, recog: null, transcript: "", active: false, unitId: null };
+  function speakingKey(unitId) { return (state.user ? state.user.id : "anon") + ":" + unitId; }
+  function hasRecognition() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
+
+  function abortRecording() {
+    rec.active = false;
+    if (rec.recog) { try { rec.recog.onresult = null; rec.recog.onend = null; rec.recog.stop(); } catch (e) {} rec.recog = null; }
+    if (rec.mediaRec && rec.mediaRec.state !== "inactive") { try { rec.mediaRec.onstop = null; rec.mediaRec.stop(); } catch (e) {} }
+    if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
+    rec.mediaRec = null; rec.chunks = [];
+  }
+  function startRecognition() {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { rec.recog = null; return; }
+    try {
+      var r = new SR(); r.lang = "en-US"; r.continuous = true; r.interimResults = false; r.maxAlternatives = 1;
+      var acc = "";
+      r.onresult = function (ev) {
+        for (var i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) acc += ev.results[i][0].transcript + " "; }
+        rec.transcript = acc.trim();
+      };
+      r.onerror = function () {};
+      r.start(); rec.recog = r;
+    } catch (e) { rec.recog = null; }
+  }
+  async function startRecording(unitId) {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+      toast("Seu navegador não permite gravar áudio.", "err"); return;
+    }
+    try { rec.stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) { toast("Não consegui acessar o microfone. Permita o acesso e tente de novo.", "err"); return; }
+    rec.chunks = []; rec.transcript = ""; rec.unitId = unitId; rec.active = true;
+    try {
+      var mime = (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/webm")) ? "audio/webm" : "";
+      rec.mediaRec = mime ? new MediaRecorder(rec.stream, { mimeType: mime }) : new MediaRecorder(rec.stream);
+    } catch (e) { rec.mediaRec = new MediaRecorder(rec.stream); }
+    rec.mediaRec.ondataavailable = function (ev) { if (ev.data && ev.data.size) rec.chunks.push(ev.data); };
+    rec.mediaRec.onstop = function () { onRecordingStopped(unitId); };
+    rec.mediaRec.start();
+    startRecognition();
+    updateRecUI("recording");
+  }
+  function stopRecording() {
+    if (rec.recog) { try { rec.recog.stop(); } catch (e) {} }
+    if (rec.mediaRec && rec.mediaRec.state !== "inactive") { try { rec.mediaRec.stop(); } catch (e) {} }
+    else { onRecordingStopped(rec.unitId); }
+    rec.active = false;
+  }
+  function onRecordingStopped(unitId) {
+    if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
+    var type = (rec.mediaRec && rec.mediaRec.mimeType) || "audio/webm";
+    var blob = rec.chunks.length ? new Blob(rec.chunks, { type: type }) : null;
+    updateRecUI("processing");
+    if (blob && IDB.ok) IDB.put(speakingKey(unitId), blob).catch(function () {});
+    // dá um tempo para o reconhecimento de voz finalizar, depois corrige
+    setTimeout(function () {
+      var unit = Store.getUnit(unitId);
+      var g = gradeSpeech(unit, rec.transcript);
+      if (state.user) Store.saveSpeaking(state.user.id, unitId, { transcript: rec.transcript, score: g.score, at: 0 });
+      renderRecResult(unitId, blob ? URL.createObjectURL(blob) : null, rec.transcript, g);
+      updateRecUI("done");
+    }, 650);
+  }
+  function normWords(s) { return (s || "").toLowerCase().replace(/[^a-z0-9'\s]/g, " ").split(/\s+/).filter(Boolean); }
+  function gradeSpeech(unit, transcript) {
+    var sp = (unit && unit.speaking) || {}, t = (transcript || "").toLowerCase();
+    var kws = sp.keywords || [];
+    var hit = kws.filter(function (k) { return t.indexOf(k.toLowerCase()) >= 0; });
+    var miss = kws.filter(function (k) { return hit.indexOf(k) < 0; });
+    var wc = normWords(transcript).length;
+    var score = kws.length ? Math.round((hit.length / kws.length) * 100) : (wc >= 4 ? 60 : 20);
+    var level = score >= 70 ? "ok" : score >= 40 ? "mid" : "low";
+    return { score: score, hit: hit, miss: miss, wordCount: wc, level: level, hasTranscript: !!(transcript && transcript.trim()) };
+  }
+  function renderRecResult(unitId, url, transcript, g) {
+    var box = $("#recResult"); if (!box) return;
+    var html = url ? '<audio class="rec-audio mt-2" controls preload="metadata" src="' + url + '"></audio>' : "";
+    if (!g.hasTranscript) {
+      html += '<div class="q__explain is-no mt-2"><b>Correção automática:</b> ' +
+        (hasRecognition()
+          ? "não entendi a fala. Fale mais perto do microfone, em inglês, e tente de novo."
+          : "este navegador não faz a correção automática — use o <b>Chrome</b> ou o <b>Edge</b>. Sua gravação foi salva acima.") + "</div>";
+    } else {
+      var cls = g.level === "ok" ? "is-ok" : (g.level === "mid" ? "" : "is-no");
+      html += '<div class="q__explain ' + cls + ' mt-2">' +
+        '<b>🗣️ Você disse:</b> "' + esc(transcript) + '"<br>' +
+        '<b>Nota: ' + g.score + "%</b> — " +
+        (g.level === "ok" ? "Muito bem! 🎉" : g.level === "mid" ? "Bom, continue praticando! 💪" : "Tente usar mais palavras do tema. 🌱") + "<br>" +
+        (g.hit.length ? "✅ Você usou: <b>" + esc(g.hit.join(", ")) + "</b><br>" : "") +
+        (g.miss.length ? "💡 Tente incluir: " + esc(g.miss.join(", ")) : "") + "</div>";
+    }
+    box.innerHTML = html;
+    var del = $("#recDelete"); if (del) del.hidden = false;
+  }
+  function updateRecUI(s) {
+    var btn = $("#recBtn"), status = $("#recStatus");
+    if (!btn) return;
+    if (s === "recording") { btn.innerHTML = "⏹ Parar"; btn.classList.add("is-recording"); if (status) status.textContent = "🔴 Gravando… fale agora sobre o tema (em inglês)."; }
+    else if (s === "processing") { btn.innerHTML = "🎤 Gravar"; btn.classList.remove("is-recording"); if (status) status.textContent = "Processando a sua fala…"; }
+    else { btn.innerHTML = "🎤 Gravar de novo"; btn.classList.remove("is-recording"); if (status) status.textContent = ""; }
+  }
+  function deleteRecording(unitId) {
+    stopAudio();
+    if (IDB.ok) IDB.del(speakingKey(unitId)).catch(function () {});
+    if (state.user) Store.clearSpeaking(state.user.id, unitId);
+    var box = $("#recResult"); if (box) box.innerHTML = "";
+    var del = $("#recDelete"); if (del) del.hidden = true;
+    var btn = $("#recBtn"); if (btn) { btn.innerHTML = "🎤 Gravar"; btn.classList.remove("is-recording"); }
+    var status = $("#recStatus"); if (status) status.textContent = "";
+    toast("Gravação apagada. Grave de novo quando quiser.");
+  }
+  function speakingCard(unit) {
+    var sp = unit.speaking;
+    return '<div class="section"><div class="card card--pad">' +
+      '<div class="spread"><h2 style="font-size:17px">🎤 Fala — Speaking</h2></div>' +
+      '<p class="muted mt-1">' + esc(sp.prompt) + "</p>" +
+      '<p class="mt-2" style="font-size:14px">Exemplo: <i>"' + esc(sp.example) + '"</i> ' +
+      '<button class="btn btn--ghost btn--sm" data-action="speak-example" data-id="' + esc(unit.id) + '">🔊 Ouvir</button></p>' +
+      '<div class="row-wrap mt-2">' +
+      '<button class="btn btn--primary" id="recBtn" data-action="rec-toggle" data-id="' + esc(unit.id) + '">🎤 Gravar</button>' +
+      '<button class="btn btn--ghost" id="recDelete" data-action="rec-delete" data-id="' + esc(unit.id) + '" hidden>🗑️ Apagar</button>' +
+      "</div>" +
+      '<div id="recStatus" class="muted mt-1" style="font-size:13px"></div>' +
+      '<div id="recResult"></div>' +
+      '<p class="dim mt-2" style="font-size:12px">O microfone é usado só no seu aparelho e o áudio fica gravado aqui. A correção verifica se você falou em inglês usando as palavras do tema (melhor no Chrome/Edge).</p>' +
+      "</div></div>";
+  }
+  // Recarrega a gravação salva (e a correção) ao abrir a unidade.
+  function hydrateSpeaking(unitId) {
+    var box = $("#recResult"); if (!box) return;
+    var sp = state.user ? Store.getSpeaking(state.user.id)[unitId] : null;
+    function show(url) {
+      var unit = Store.getUnit(unitId);
+      if (sp) { renderRecResult(unitId, url, sp.transcript, gradeSpeech(unit, sp.transcript)); }
+      else if (url) { box.innerHTML = '<audio class="rec-audio mt-2" controls preload="metadata" src="' + url + '"></audio>'; var del = $("#recDelete"); if (del) del.hidden = false; }
+    }
+    if (IDB.ok) IDB.get(speakingKey(unitId)).then(function (blob) { show(blob ? URL.createObjectURL(blob) : null); }).catch(function () { show(null); });
+    else show(null);
+  }
+
   /* ---------------- state ---------------- */
   var state = { user: null, tab: "home", screen: "main", unitId: null, quiz: null, search: "", filter: "all" };
 
@@ -458,6 +631,7 @@
         : '<div class="section"><button class="btn btn--ghost btn--block" data-action="yt-search-q" data-q="' + esc(unit.searchQuery || unit.title) + '">🎬 Buscar vídeos desta unidade no YouTube ↗</button></div>') +
 
       audioHtml + readHtml +
+      (unit.speaking && unit.speaking.prompt ? speakingCard(unit) : "") +
 
       '<div class="section"><div class="card card--pad center">' +
         "<h2 style=\"font-size:17px\">📝 Exercícios</h2>" +
@@ -752,9 +926,18 @@
      RENDER
      ============================================================ */
   function render() {
+    stopAudio(); abortRecording(); // encerra qualquer áudio/gravação ao trocar de tela
     var u = state.user;
     if (!u) { appEl.innerHTML = loginView(state._loginRole); return; }
     appEl.innerHTML = u.role === "admin" ? adminShell() : studentShell();
+    afterRender();
+  }
+  function afterRender() {
+    // ao abrir uma unidade (aluno), recarrega a gravação salva do exercício de fala
+    if (state.user && state.user.role === "student" && state.screen === "unit" && state.unitId) {
+      var unit = Store.getUnit(state.unitId);
+      if (unit && unit.speaking) hydrateSpeaking(state.unitId);
+    }
   }
 
   /* ============================================================
@@ -804,6 +987,13 @@
       case "read-aloud": playReading(Store.getUnit(t.getAttribute("data-id"))); break;
       case "stop-audio": stopAudio(); highlightLine(-1); break;
       case "toggle-pt": { var db = $("#dialogueBox"); if (db) db.classList.toggle("show-pt"); break; }
+      case "rec-toggle": { stopAudio(); var rid = t.getAttribute("data-id"); if (rec.active) stopRecording(); else startRecording(rid); break; }
+      case "rec-delete": deleteRecording(t.getAttribute("data-id")); break;
+      case "speak-example": {
+        var su = Store.getUnit(t.getAttribute("data-id"));
+        if (su && su.speaking) playClips([{ url: "assets/audio/" + su.id + "/speaking.mp3", text: su.speaking.example, s: "R" }], null, null);
+        break;
+      }
       case "yt-search": {
         var input = $("#videoSearch");
         var q = (input && input.value.trim()) || "basic english for beginners";
@@ -1011,6 +1201,15 @@
   GSE._test = {
     isCorrect: isCorrect, normFill: normFill, normApos: normApos,
     overallStats: overallStats, allVideos: allVideos, filterVideos: filterVideos, setState: function (p) { Object.assign(state, p); }
+  };
+
+  // Hooks usados pela camada de sincronização (Firebase), se ativa.
+  var _refreshTimer = null;
+  GSE.App = {
+    refresh: function () { if (_refreshTimer) return; _refreshTimer = setTimeout(function () { _refreshTimer = null; try { render(); } catch (e) {} }, 250); },
+    role: function () { return state.user ? state.user.role : null; },
+    userId: function () { return state.user ? state.user.id : null; },
+    toast: function (m, k) { try { toast(m, k); } catch (e) {} }
   };
 
   /* ============================================================

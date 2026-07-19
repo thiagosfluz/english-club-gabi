@@ -304,7 +304,17 @@ window.GSE.SEED = {
           "answer": true,
           "explanation": "Verdadeiro. Soletrar (to spell) é dizer as letras uma a uma."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Cumprimente um colega, diga o seu nome e como você está. Ex.: use 'Good morning', 'My name is...', 'I am fine'.",
+        "example": "Good morning. My name is Ana. Nice to meet you. I am fine, thank you.",
+        "keywords": [
+          "morning",
+          "name",
+          "nice",
+          "fine"
+        ]
+      }
     },
     {
       "id": "numbers",
@@ -583,7 +593,17 @@ window.GSE.SEED = {
           "answer": false,
           "explanation": "Falso. 'Thirty' é 30. 13 é 'thirteen'."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Fale sobre números no seu trabalho: quantas caixas, peças ou produtos há.",
+        "example": "There are fifty boxes. Each box has twenty pieces. We ship one thousand products.",
+        "keywords": [
+          "boxes",
+          "pieces",
+          "products",
+          "thousand"
+        ]
+      }
     },
     {
       "id": "days-time",
@@ -863,7 +883,17 @@ window.GSE.SEED = {
           "answer": false,
           "explanation": "Falso. 'Noon' é meio-dia. Meia-noite é 'midnight'."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Fale sobre o seu horário de trabalho: que horas começa, quando é a reunião e que horas termina.",
+        "example": "I start work at seven o'clock. The meeting is on Friday. I finish at five thirty.",
+        "keywords": [
+          "start",
+          "work",
+          "meeting",
+          "finish"
+        ]
+      }
     },
     {
       "id": "to-be",
@@ -1159,7 +1189,17 @@ window.GSE.SEED = {
           "answer": "are",
           "explanation": "Na pergunta o 'to be' vem antes do pronome: Are you a manager?"
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Apresente-se: diga o seu nome, de onde você é e a sua profissão (use 'I am').",
+        "example": "My name is Carlos. I am from Brazil. I am a PPCP analyst.",
+        "keywords": [
+          "name",
+          "from",
+          "brazil",
+          "analyst"
+        ]
+      }
     },
     {
       "id": "present-simple",
@@ -1451,7 +1491,17 @@ window.GSE.SEED = {
           "answer": false,
           "explanation": "Falso. Com 'they' não usamos -s. O certo é 'They play football'."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Fale sobre a sua rotina de trabalho usando o presente simples (I wake up, I start, I work...).",
+        "example": "I usually wake up at six. I always have breakfast. I start work at seven.",
+        "keywords": [
+          "wake",
+          "breakfast",
+          "start",
+          "work"
+        ]
+      }
     },
     {
       "id": "there-is-are",
@@ -1722,7 +1772,17 @@ window.GSE.SEED = {
           "answer": 0,
           "explanation": "'under' = diretamente embaixo: The pallet is under the table."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Descreva o seu local de trabalho usando there is / there are e preposições (in, on, near...).",
+        "example": "There is a forklift near the door. There are many boxes on the shelves.",
+        "keywords": [
+          "there",
+          "forklift",
+          "boxes",
+          "shelves"
+        ]
+      }
     },
     {
       "id": "describing",
@@ -2044,7 +2104,18 @@ window.GSE.SEED = {
           "answer": true,
           "explanation": "Verdadeiro. 'very' apenas informa o grau (muito). 'too' apontaria um problema."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Descreva um objeto do seu trabalho usando adjetivos e cores (big, new, fast, red...).",
+        "example": "The box is big and heavy. The new machine is fast and clean.",
+        "keywords": [
+          "big",
+          "heavy",
+          "new",
+          "fast",
+          "clean"
+        ]
+      }
     },
     {
       "id": "present-continuous",
@@ -2294,7 +2365,17 @@ window.GSE.SEED = {
           "answer": true,
           "explanation": "Verdadeiro. Verbos de estado (want, know, like...) ficam no present simple: 'I want'."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Diga o que está acontecendo agora no seu setor (use am/is/are + verbo-ing).",
+        "example": "Right now the team is loading two trucks. I am checking the orders.",
+        "keywords": [
+          "loading",
+          "checking",
+          "team",
+          "trucks"
+        ]
+      }
     },
     {
       "id": "past-simple",
@@ -2556,7 +2637,17 @@ window.GSE.SEED = {
           "answer": 1,
           "explanation": "'arrive' é regular: passado 'arrived'."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Conte o que você fez ontem no trabalho (use o passado: worked, checked, went, had...).",
+        "example": "Yesterday I worked the morning shift. I checked fifty orders. The truck arrived late.",
+        "keywords": [
+          "yesterday",
+          "worked",
+          "checked",
+          "arrived"
+        ]
+      }
     },
     {
       "id": "can-requests",
@@ -2806,7 +2897,17 @@ window.GSE.SEED = {
           "answer": "moment",
           "explanation": "'Just a moment' = Só um momento."
         }
-      ]
+      ],
+      "speaking": {
+        "prompt": "Faça um pedido educado no trabalho (use Can you...? / Could you...? / please).",
+        "example": "Can you help me, please? I would like to check this order. Could you send the report?",
+        "keywords": [
+          "help",
+          "please",
+          "would",
+          "report"
+        ]
+      }
     }
   ]
 };

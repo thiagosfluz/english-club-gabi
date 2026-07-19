@@ -16,11 +16,12 @@ window.GSE = window.GSE || {};
     users: "gse.users",
     content: "gse.content",
     progress: "gse.progress",
+    speaking: "gse.speaking",
     session: "gse.session",
     theme: "gse.theme",
     ver: "gse.version"
   };
-  var DATA_VERSION = 3; // v3: vocabulário completo da apostila (tabelas + vocabulário corporativo)
+  var DATA_VERSION = 4; // v4: exercício de fala (speaking) + prep para sync
 
   /* ---------- low-level JSON storage ---------- */
   function read(key, fallback) {
@@ -35,11 +36,17 @@ window.GSE = window.GSE || {};
   function write(key, value) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
+      // Notifica a camada de sync (Firebase), se ativa. Ignorado se ausente.
+      try { if (GSE.Sync && GSE.Sync.onLocalWrite) GSE.Sync.onLocalWrite(key, value); } catch (e2) {}
       return true;
     } catch (e) {
       console.error("Falha ao salvar", key, e);
       return false;
     }
+  }
+  // Grava sem disparar o sync (usado pela própria camada de sync ao aplicar dados remotos).
+  function writeLocalOnly(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch (e) { return false; }
   }
 
   /* ---------- id + password hashing ---------- */
@@ -284,6 +291,24 @@ window.GSE = window.GSE || {};
   function getAllProgress() { return read(KEY.progress, {}); }
 
   /* ============================================================
+     SPEAKING (resultado do exercício de fala por usuário/unidade)
+     ============================================================ */
+  function getSpeaking(userId) {
+    var all = read(KEY.speaking, {});
+    return all[userId] || {};
+  }
+  function saveSpeaking(userId, unitId, data) {
+    var all = read(KEY.speaking, {});
+    if (!all[userId]) all[userId] = {};
+    all[userId][unitId] = data;
+    write(KEY.speaking, all);
+  }
+  function clearSpeaking(userId, unitId) {
+    var all = read(KEY.speaking, {});
+    if (all[userId] && all[userId][unitId]) { delete all[userId][unitId]; write(KEY.speaking, all); }
+  }
+
+  /* ============================================================
      THEME
      ============================================================ */
   function getTheme() { return read(KEY.theme, "auto"); }
@@ -389,11 +414,15 @@ window.GSE = window.GSE || {};
     addExercise: addExercise, removeExercise: removeExercise, parseYouTubeId: parseYouTubeId,
     // progress
     getProgress: getProgress, saveUnitResult: saveUnitResult, markWatched: markWatched, getAllProgress: getAllProgress,
+    // speaking
+    getSpeaking: getSpeaking, saveSpeaking: saveSpeaking, clearSpeaking: clearSpeaking,
     // theme
     getTheme: getTheme, setTheme: setTheme,
     // io
     exportAll: exportAll, exportContentOnly: exportContentOnly, importContent: importContent,
     resetAll: resetAll, resetContentToSeed: resetContentToSeed,
+    // sync helpers
+    writeLocalOnly: writeLocalOnly, read: read,
     // lifecycle
     init: init, uid: uid
   };

@@ -46,6 +46,7 @@ O site tem dois modos, escolhidos na tela de login:
   - 🎬 assistir aos **vídeos**;
   - 🎧 ouvir um **áudio** (pessoas conversando sobre o tema — o app fala com a voz do navegador) e fazer os **exercícios de áudio**;
   - 📖 fazer a **tarefa de reading** (texto curto + exercícios);
+  - 🎤 fazer o **exercício de fala (Speaking):** abrir o microfone, gravar falando sobre o tema, ouvir a própria gravação, **apagar e gravar de novo**, e receber uma **correção automática** (a IA transcreve a fala em inglês e verifica se você usou as palavras do tema);
   - 📝 fazer os **exercícios** de gramática/vocabulário (correção na hora, com explicações em português).
 - **Progresso:** ver tarefas concluídas, média de acertos e vídeos assistidos.
 
@@ -86,16 +87,35 @@ Com o site publicado, no celular use **"Adicionar à tela de início"** (o app f
 
 ---
 
-## ⚠️ Importante saber (limitação e evolução)
+## ☁️ Sincronização em tempo real (Firebase) — como ligar
 
-Este app guarda os dados **no navegador de cada aparelho** (`localStorage`). Ou seja:
+O app já vem **preparado** para sincronizar entre todos os aparelhos em tempo real usando o **Firebase (Firestore + Authentication)**. Enquanto você não configurar, ele funciona normalmente só com o navegador (`localStorage`).
 
-- O **conteúdo que já vem pronto** aparece para **todos** os alunos, em qualquer aparelho. ✅
-- Os **acessos dos alunos, o progresso e os vídeos que a professora adicionar** ficam salvos **só naquele aparelho**. Eles **não** sincronizam sozinhos entre celulares.
+**Como funciona quando ligado:**
+- A **professora** escolhe o conteúdo e cria os acessos → aparece em tempo real em **todos** os celulares dos alunos.
+- Cada **aluno** faz os exercícios → o **progresso** aparece no painel **Turma** da professora, ao vivo.
 
-**Como contornar hoje:** em **Config → Exportar conteúdo**, a professora gera um arquivo `.json` com suas unidades/vídeos e usa **Importar conteúdo** em outro aparelho.
+**Passo a passo (uma vez, ~5 min):**
+1. Crie um projeto grátis em **https://console.firebase.google.com**.
+2. Adicione um app **Web** (`</>`) e copie o objeto `firebaseConfig`.
+3. Abra `assets/js/firebase-config.js` e cole os valores (apiKey, projectId, etc.).
+4. No console do Firebase:
+   - **Authentication → Sign-in method →** ative **"Anônimo"**;
+   - **Firestore Database →** crie o banco;
+   - **Firestore → Regras →** cole:
+     ```
+     rules_version = '2';
+     service cloud.firestore {
+       match /databases/{db}/documents {
+         match /gse_state/{doc} { allow read, write: if request.auth != null; }
+       }
+     }
+     ```
+5. Publique o site de novo (git push / novo deploy). Pronto — sincroniza sozinho.
 
-**Para sincronizar de verdade** (todos os alunos e o progresso num único lugar, em tempo real), o próximo passo é ligar um banco de dados gratuito como o **Firebase** (Firestore + Authentication) ou o **Supabase**. A estrutura de dados do app (em `assets/js/store.js`) já é separada justamente para facilitar essa evolução. Posso implementar isso se você quiser.
+> Os valores do `firebaseConfig` **não são secretos** (ficam no app do navegador); a segurança vem das **Regras** do Firestore acima.
+
+**Sem o Firebase (contorno atual):** em **Config → Exportar conteúdo**, a professora gera um `.json` com o conteúdo e usa **Importar conteúdo** em outro aparelho.
 
 > 🔒 **Sobre a senha:** por ser um app sem servidor, a autenticação é simples (as senhas são guardadas com hash SHA-256 no navegador). É ótimo para uso em sala de aula, mas **não** substitui um login de verdade com servidor. Não use senhas importantes.
 
