@@ -30,6 +30,110 @@ window.GSE.SEED = {
       "searchQuery": "english alphabet and greetings for beginners",
       "vocabulary": [
         {
+          "en": "A",
+          "pt": "letra A — \"êi\""
+        },
+        {
+          "en": "B",
+          "pt": "letra B — \"bî\""
+        },
+        {
+          "en": "C",
+          "pt": "letra C — \"sî\""
+        },
+        {
+          "en": "D",
+          "pt": "letra D — \"dî\""
+        },
+        {
+          "en": "E",
+          "pt": "letra E — \"î\""
+        },
+        {
+          "en": "F",
+          "pt": "letra F — \"éf\""
+        },
+        {
+          "en": "G",
+          "pt": "letra G — \"djî\""
+        },
+        {
+          "en": "H",
+          "pt": "letra H — \"êitch\""
+        },
+        {
+          "en": "I",
+          "pt": "letra I — \"ái\""
+        },
+        {
+          "en": "J",
+          "pt": "letra J — \"djêi\""
+        },
+        {
+          "en": "K",
+          "pt": "letra K — \"kêi\""
+        },
+        {
+          "en": "L",
+          "pt": "letra L — \"él\""
+        },
+        {
+          "en": "M",
+          "pt": "letra M — \"ém\""
+        },
+        {
+          "en": "N",
+          "pt": "letra N — \"én\""
+        },
+        {
+          "en": "O",
+          "pt": "letra O — \"ôu\""
+        },
+        {
+          "en": "P",
+          "pt": "letra P — \"pî\""
+        },
+        {
+          "en": "Q",
+          "pt": "letra Q — \"kiú\""
+        },
+        {
+          "en": "R",
+          "pt": "letra R — \"ár\""
+        },
+        {
+          "en": "S",
+          "pt": "letra S — \"és\""
+        },
+        {
+          "en": "T",
+          "pt": "letra T — \"tî\""
+        },
+        {
+          "en": "U",
+          "pt": "letra U — \"iú\""
+        },
+        {
+          "en": "V",
+          "pt": "letra V — \"vî\""
+        },
+        {
+          "en": "W",
+          "pt": "letra W — \"dâbliu\""
+        },
+        {
+          "en": "X",
+          "pt": "letra X — \"éks\""
+        },
+        {
+          "en": "Y",
+          "pt": "letra Y — \"uái\""
+        },
+        {
+          "en": "Z",
+          "pt": "letra Z — \"zî\""
+        },
+        {
           "en": "Hello / Hi",
           "pt": "Olá / Oi"
         },
@@ -76,10 +180,6 @@ window.GSE.SEED = {
         {
           "en": "See you tomorrow",
           "pt": "Até amanhã"
-        },
-        {
-          "en": "to spell",
-          "pt": "soletrar"
         },
         {
           "en": "PPCP Analyst",
@@ -314,6 +414,9 @@ window.GSE.SEED = {
           "nice",
           "fine"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você se apresentando em inglês: diga um cumprimento, o seu nome e a sua profissão. Ex.: \"Good morning. My name is... I am a...\""
       }
     },
     {
@@ -326,48 +429,128 @@ window.GSE.SEED = {
       "searchQuery": "english numbers 0 to 1000000 for beginners",
       "vocabulary": [
         {
-          "en": "zero, one, two, three",
-          "pt": "0, 1, 2, 3"
+          "en": "zero",
+          "pt": "0"
         },
         {
-          "en": "four, five, six, seven",
-          "pt": "4, 5, 6, 7"
+          "en": "one",
+          "pt": "1"
         },
         {
-          "en": "eight, nine, ten",
-          "pt": "8, 9, 10"
+          "en": "two",
+          "pt": "2"
         },
         {
-          "en": "eleven, twelve, thirteen",
-          "pt": "11, 12, 13"
+          "en": "three",
+          "pt": "3"
         },
         {
-          "en": "fourteen … nineteen",
-          "pt": "14 … 19"
+          "en": "four",
+          "pt": "4"
         },
         {
-          "en": "twenty / thirty / forty",
-          "pt": "20 / 30 / 40"
+          "en": "five",
+          "pt": "5"
         },
         {
-          "en": "fifty / sixty / seventy",
-          "pt": "50 / 60 / 70"
+          "en": "six",
+          "pt": "6"
         },
         {
-          "en": "eighty / ninety",
-          "pt": "80 / 90"
+          "en": "seven",
+          "pt": "7"
+        },
+        {
+          "en": "eight",
+          "pt": "8"
+        },
+        {
+          "en": "nine",
+          "pt": "9"
+        },
+        {
+          "en": "ten",
+          "pt": "10"
+        },
+        {
+          "en": "eleven",
+          "pt": "11"
+        },
+        {
+          "en": "twelve",
+          "pt": "12"
+        },
+        {
+          "en": "thirteen",
+          "pt": "13"
+        },
+        {
+          "en": "fourteen",
+          "pt": "14"
+        },
+        {
+          "en": "fifteen",
+          "pt": "15"
+        },
+        {
+          "en": "sixteen",
+          "pt": "16"
+        },
+        {
+          "en": "seventeen",
+          "pt": "17"
+        },
+        {
+          "en": "eighteen",
+          "pt": "18"
+        },
+        {
+          "en": "nineteen",
+          "pt": "19"
+        },
+        {
+          "en": "twenty",
+          "pt": "20"
+        },
+        {
+          "en": "thirty",
+          "pt": "30"
+        },
+        {
+          "en": "forty",
+          "pt": "40"
+        },
+        {
+          "en": "fifty",
+          "pt": "50"
+        },
+        {
+          "en": "sixty",
+          "pt": "60"
+        },
+        {
+          "en": "seventy",
+          "pt": "70"
+        },
+        {
+          "en": "eighty",
+          "pt": "80"
+        },
+        {
+          "en": "ninety",
+          "pt": "90"
         },
         {
           "en": "one hundred",
-          "pt": "cem"
+          "pt": "100 (cem)"
         },
         {
           "en": "one thousand",
-          "pt": "mil"
+          "pt": "1.000 (mil)"
         },
         {
           "en": "one million",
-          "pt": "um milhão"
+          "pt": "1.000.000 (um milhão)"
         },
         {
           "en": "Unit(s)",
@@ -429,63 +612,63 @@ window.GSE.SEED = {
         "lines": [
           {
             "s": "Ana",
-            "en": "Good morning, Paulo. How many boxes are ready?",
-            "pt": "Bom dia, Paulo. Quantas caixas estão prontas?"
+            "en": "Good morning, Paulo. Do you work with numbers?",
+            "pt": "Bom dia, Paulo. Você trabalha com números?"
           },
           {
             "s": "Paulo",
-            "en": "Good morning. There are fifty boxes.",
-            "pt": "Bom dia. Há cinquenta caixas."
+            "en": "Yes, every day. I check fifty boxes in the morning.",
+            "pt": "Sim, todo dia. Confiro cinquenta caixas de manhã."
           },
           {
             "s": "Ana",
-            "en": "And how many pieces in each box?",
-            "pt": "E quantas peças em cada caixa?"
+            "en": "How many pieces are in each box?",
+            "pt": "Quantas peças há em cada caixa?"
           },
           {
             "s": "Paulo",
-            "en": "Twenty pieces in each box.",
-            "pt": "Vinte peças em cada caixa."
+            "en": "Each box has twenty pieces.",
+            "pt": "Cada caixa tem vinte peças."
           },
           {
             "s": "Ana",
-            "en": "Perfect. We send one thousand products today.",
-            "pt": "Perfeito. Enviamos mil produtos hoje."
+            "en": "And how many products do we send every week?",
+            "pt": "E quantos produtos enviamos por semana?"
           },
           {
             "s": "Paulo",
-            "en": "OK. The order is for one thousand.",
-            "pt": "Ok. O pedido é de mil."
+            "en": "We send one thousand products every week. My team has eight people.",
+            "pt": "Enviamos mil produtos por semana. Minha equipe tem oito pessoas."
           }
         ],
         "questions": [
           {
             "type": "mcq",
-            "question": "How many boxes are ready?",
+            "question": "How many boxes does Paulo check?",
             "options": [
               "fifteen",
               "fifty",
               "five"
             ],
             "answer": 1,
-            "explanation": "Paulo diz 'There are fifty boxes' (cinquenta)."
+            "explanation": "Ele diz 'I check fifty boxes'."
           },
           {
             "type": "truefalse",
             "question": "Each box has twenty pieces.",
             "answer": true,
-            "explanation": "Sim: 'Twenty pieces in each box'."
+            "explanation": "Sim: 'Each box has twenty pieces'."
           },
           {
             "type": "mcq",
-            "question": "How many products do they send today?",
+            "question": "How many products do they send every week?",
             "options": [
               "one hundred",
               "one thousand",
               "one million"
             ],
             "answer": 1,
-            "explanation": "'We send one thousand products today' (mil)."
+            "explanation": "'We send one thousand products every week'."
           }
         ]
       },
@@ -603,6 +786,9 @@ window.GSE.SEED = {
           "products",
           "thousand"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você contando de 1 até 10 em inglês (one, two, three, four, five, six, seven, eight, nine, ten)."
       }
     },
     {
@@ -615,24 +801,80 @@ window.GSE.SEED = {
       "searchQuery": "days months and telling time in english for beginners",
       "vocabulary": [
         {
-          "en": "Monday, Tuesday, Wednesday",
-          "pt": "segunda, terça, quarta"
+          "en": "Monday",
+          "pt": "segunda-feira"
         },
         {
-          "en": "Thursday, Friday",
-          "pt": "quinta, sexta"
+          "en": "Tuesday",
+          "pt": "terça-feira"
         },
         {
-          "en": "Saturday, Sunday",
-          "pt": "sábado, domingo"
+          "en": "Wednesday",
+          "pt": "quarta-feira"
         },
         {
-          "en": "January … June",
-          "pt": "janeiro … junho"
+          "en": "Thursday",
+          "pt": "quinta-feira"
         },
         {
-          "en": "July … December",
-          "pt": "julho … dezembro"
+          "en": "Friday",
+          "pt": "sexta-feira"
+        },
+        {
+          "en": "Saturday",
+          "pt": "sábado"
+        },
+        {
+          "en": "Sunday",
+          "pt": "domingo"
+        },
+        {
+          "en": "January",
+          "pt": "janeiro"
+        },
+        {
+          "en": "February",
+          "pt": "fevereiro"
+        },
+        {
+          "en": "March",
+          "pt": "março"
+        },
+        {
+          "en": "April",
+          "pt": "abril"
+        },
+        {
+          "en": "May",
+          "pt": "maio"
+        },
+        {
+          "en": "June",
+          "pt": "junho"
+        },
+        {
+          "en": "July",
+          "pt": "julho"
+        },
+        {
+          "en": "August",
+          "pt": "agosto"
+        },
+        {
+          "en": "September",
+          "pt": "setembro"
+        },
+        {
+          "en": "October",
+          "pt": "outubro"
+        },
+        {
+          "en": "November",
+          "pt": "novembro"
+        },
+        {
+          "en": "December",
+          "pt": "dezembro"
         },
         {
           "en": "What time is it?",
@@ -647,16 +889,28 @@ window.GSE.SEED = {
           "pt": "sete e meia"
         },
         {
-          "en": "a quarter past / to",
-          "pt": "e quinze / quinze para"
+          "en": "a quarter past seven",
+          "pt": "sete e quinze"
         },
         {
-          "en": "a.m. / p.m.",
-          "pt": "manhã / tarde-noite"
+          "en": "a quarter to eight",
+          "pt": "quinze para as oito"
         },
         {
-          "en": "noon / midnight",
-          "pt": "meio-dia / meia-noite"
+          "en": "a.m.",
+          "pt": "manhã"
+        },
+        {
+          "en": "p.m.",
+          "pt": "tarde-noite"
+        },
+        {
+          "en": "noon",
+          "pt": "meio-dia"
+        },
+        {
+          "en": "midnight",
+          "pt": "meia-noite"
         },
         {
           "en": "Schedule",
@@ -667,8 +921,12 @@ window.GSE.SEED = {
           "pt": "Turno"
         },
         {
-          "en": "Morning / Night shift",
-          "pt": "Turno da manhã / noite"
+          "en": "Morning shift",
+          "pt": "Turno da manhã"
+        },
+        {
+          "en": "Night shift",
+          "pt": "Turno da noite"
         },
         {
           "en": "Working hours",
@@ -691,8 +949,12 @@ window.GSE.SEED = {
           "pt": "Intervalo / pausa"
         },
         {
-          "en": "On time / Late",
-          "pt": "No prazo / atrasado"
+          "en": "On time",
+          "pt": "No prazo"
+        },
+        {
+          "en": "Late",
+          "pt": "Atrasado"
         },
         {
           "en": "Overtime",
@@ -729,18 +991,18 @@ window.GSE.SEED = {
           },
           {
             "s": "Ana",
-            "en": "I start at seven o'clock in the morning.",
-            "pt": "Começo às sete em ponto de manhã."
+            "en": "I start work at seven o'clock in the morning.",
+            "pt": "Começo a trabalhar às sete em ponto de manhã."
           },
           {
             "s": "Supervisor",
-            "en": "And when is the meeting?",
-            "pt": "E quando é a reunião?"
+            "en": "When do you have lunch?",
+            "pt": "Quando você almoça?"
           },
           {
             "s": "Ana",
-            "en": "The meeting is at ten, on Friday.",
-            "pt": "A reunião é às dez, na sexta-feira."
+            "en": "I have lunch at twelve, at noon. The afternoon shift starts at two p.m.",
+            "pt": "Almoço ao meio-dia. O turno da tarde começa às duas da tarde."
           },
           {
             "s": "Supervisor",
@@ -749,8 +1011,8 @@ window.GSE.SEED = {
           },
           {
             "s": "Ana",
-            "en": "I finish at five thirty.",
-            "pt": "Termino às cinco e meia."
+            "en": "I finish at five thirty. On Friday we have a meeting at ten.",
+            "pt": "Termino às cinco e meia. Na sexta temos uma reunião às dez."
           }
         ],
         "questions": [
@@ -763,7 +1025,13 @@ window.GSE.SEED = {
               "ten o'clock"
             ],
             "answer": 1,
-            "explanation": "'I start at seven o'clock'."
+            "explanation": "'I start work at seven o'clock'."
+          },
+          {
+            "type": "truefalse",
+            "question": "Ana has lunch at noon.",
+            "answer": true,
+            "explanation": "'I have lunch at twelve, at noon'."
           },
           {
             "type": "mcq",
@@ -774,13 +1042,7 @@ window.GSE.SEED = {
               "Sunday"
             ],
             "answer": 1,
-            "explanation": "'The meeting is at ten, on Friday'."
-          },
-          {
-            "type": "truefalse",
-            "question": "Ana finishes at five thirty.",
-            "answer": true,
-            "explanation": "Sim: 'I finish at five thirty'."
+            "explanation": "'On Friday we have a meeting at ten'."
           }
         ]
       },
@@ -893,6 +1155,9 @@ window.GSE.SEED = {
           "meeting",
           "finish"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você dizendo os 7 dias da semana em inglês, ou o seu horário de trabalho (I start at..., I finish at...)."
       }
     },
     {
@@ -909,20 +1174,48 @@ window.GSE.SEED = {
           "pt": "eu sou / estou"
         },
         {
-          "en": "you are / he is / she is",
-          "pt": "você é/está · ele é/está · ela é/está"
+          "en": "you are (you're)",
+          "pt": "você é / está"
         },
         {
-          "en": "it is / we are / they are",
-          "pt": "isto é · nós somos · eles são"
+          "en": "he is (he's)",
+          "pt": "ele é / está"
         },
         {
-          "en": "I'm not / isn't / aren't",
-          "pt": "eu não sou · não é · não são"
+          "en": "she is (she's)",
+          "pt": "ela é / está"
         },
         {
-          "en": "Are you...? / Is he...?",
-          "pt": "Você é...? / Ele é...?"
+          "en": "it is (it's)",
+          "pt": "isto é / está"
+        },
+        {
+          "en": "we are (we're)",
+          "pt": "nós somos / estamos"
+        },
+        {
+          "en": "they are (they're)",
+          "pt": "eles são / estão"
+        },
+        {
+          "en": "I'm not",
+          "pt": "eu não sou / estou"
+        },
+        {
+          "en": "isn't",
+          "pt": "não é / está"
+        },
+        {
+          "en": "aren't",
+          "pt": "não são / estão"
+        },
+        {
+          "en": "Are you...?",
+          "pt": "Você é...? / está...?"
+        },
+        {
+          "en": "Is he...?",
+          "pt": "Ele é...? / está...?"
         },
         {
           "en": "full name",
@@ -1030,31 +1323,42 @@ window.GSE.SEED = {
         "lines": [
           {
             "s": "Ana",
-            "en": "Hello, my name is Ana. I am a shipping coordinator.",
-            "pt": "Olá, meu nome é Ana. Eu sou coordenadora de expedição."
+            "en": "Hello, my name is Ana. I am from Brazil.",
+            "pt": "Olá, meu nome é Ana. Eu sou do Brasil."
           },
           {
             "s": "Carlos",
-            "en": "Nice to meet you. I am Carlos. I am a PPCP analyst.",
-            "pt": "Prazer. Eu sou o Carlos. Sou analista de PPCP."
+            "en": "Nice to meet you, Ana. What is your job?",
+            "pt": "Prazer, Ana. Qual é o seu trabalho?"
           },
           {
             "s": "Ana",
-            "en": "Are you from Brazil?",
-            "pt": "Você é do Brasil?"
+            "en": "I am a shipping coordinator. I work in a factory. I am thirty-five years old.",
+            "pt": "Sou coordenadora de expedição. Trabalho numa fábrica. Tenho trinta e cinco anos."
           },
           {
             "s": "Carlos",
-            "en": "Yes, I am. And you?",
-            "pt": "Sim, sou. E você?"
+            "en": "I am Carlos. I am a PPCP analyst.",
+            "pt": "Eu sou o Carlos. Sou analista de PPCP."
           },
           {
             "s": "Ana",
-            "en": "I am from Brazil too. We are a good team!",
-            "pt": "Eu sou do Brasil também. Nós somos uma boa equipe!"
+            "en": "We are colleagues and we are a good team!",
+            "pt": "Somos colegas e somos uma boa equipe!"
           }
         ],
         "questions": [
+          {
+            "type": "mcq",
+            "question": "Where is Ana from?",
+            "options": [
+              "Brazil",
+              "Canada",
+              "Portugal"
+            ],
+            "answer": 0,
+            "explanation": "'I am from Brazil'."
+          },
           {
             "type": "mcq",
             "question": "What is Carlos's job?",
@@ -1064,24 +1368,13 @@ window.GSE.SEED = {
               "manager"
             ],
             "answer": 1,
-            "explanation": "'I am a PPCP analyst', diz Carlos."
+            "explanation": "'I am a PPCP analyst'."
           },
           {
             "type": "truefalse",
-            "question": "Ana is from Brazil.",
+            "question": "Ana is thirty-five years old.",
             "answer": true,
-            "explanation": "'I am from Brazil too', diz Ana."
-          },
-          {
-            "type": "mcq",
-            "question": "What is Ana's job?",
-            "options": [
-              "PPCP analyst",
-              "shipping coordinator",
-              "supervisor"
-            ],
-            "answer": 1,
-            "explanation": "'I am a shipping coordinator', diz Ana."
+            "explanation": "'I am thirty-five years old'."
           }
         ]
       },
@@ -1199,6 +1492,9 @@ window.GSE.SEED = {
           "brazil",
           "analyst"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você se apresentando com o verbo 'to be': nome, país e profissão (My name is... I am from... I am a...)."
       }
     },
     {
@@ -1211,8 +1507,12 @@ window.GSE.SEED = {
       "searchQuery": "present simple daily routine english for beginners",
       "vocabulary": [
         {
-          "en": "to wake up / to get up",
-          "pt": "acordar / levantar da cama"
+          "en": "to wake up",
+          "pt": "acordar"
+        },
+        {
+          "en": "to get up",
+          "pt": "levantar da cama"
         },
         {
           "en": "to have breakfast",
@@ -1223,8 +1523,12 @@ window.GSE.SEED = {
           "pt": "ir ao trabalho"
         },
         {
-          "en": "to start / to finish",
-          "pt": "começar / terminar"
+          "en": "to start",
+          "pt": "começar"
+        },
+        {
+          "en": "to finish",
+          "pt": "terminar"
         },
         {
           "en": "to work",
@@ -1247,40 +1551,72 @@ window.GSE.SEED = {
           "pt": "voltar para casa"
         },
         {
-          "en": "to study / to watch TV",
-          "pt": "estudar / assistir TV"
+          "en": "to study",
+          "pt": "estudar"
+        },
+        {
+          "en": "to watch TV",
+          "pt": "assistir TV"
         },
         {
           "en": "to go to bed",
           "pt": "ir dormir"
         },
         {
-          "en": "always / usually",
-          "pt": "sempre / geralmente"
+          "en": "always",
+          "pt": "sempre"
         },
         {
-          "en": "often / frequently",
-          "pt": "frequentemente / com frequência"
+          "en": "usually",
+          "pt": "geralmente"
         },
         {
-          "en": "sometimes / occasionally",
-          "pt": "às vezes / ocasionalmente"
+          "en": "often",
+          "pt": "frequentemente"
         },
         {
-          "en": "rarely / hardly ever / never",
-          "pt": "raramente / quase nunca / nunca"
+          "en": "frequently",
+          "pt": "com frequência"
         },
         {
-          "en": "to plan / to control",
-          "pt": "planejar / controlar"
+          "en": "sometimes",
+          "pt": "às vezes"
+        },
+        {
+          "en": "occasionally",
+          "pt": "ocasionalmente"
+        },
+        {
+          "en": "rarely",
+          "pt": "raramente"
+        },
+        {
+          "en": "hardly ever",
+          "pt": "quase nunca"
+        },
+        {
+          "en": "never",
+          "pt": "nunca"
+        },
+        {
+          "en": "to plan",
+          "pt": "planejar"
+        },
+        {
+          "en": "to control",
+          "pt": "controlar"
         },
         {
           "en": "to organize",
           "pt": "organizar"
         },
         {
-          "en": "to deliver / to ship",
-          "pt": "entregar / expedir"
+          "en": "to deliver",
+          "pt": "entregar"
+        },
+        {
+          "en": "to ship",
+          "pt": "expedir / despachar"
         },
         {
           "en": "to schedule",
@@ -1291,8 +1627,12 @@ window.GSE.SEED = {
           "pt": "reportar / relatar"
         },
         {
-          "en": "Task / Report",
-          "pt": "Tarefa / Relatório"
+          "en": "Task",
+          "pt": "Tarefa"
+        },
+        {
+          "en": "Report",
+          "pt": "Relatório"
         },
         {
           "en": "Production order",
@@ -1332,12 +1672,12 @@ window.GSE.SEED = {
         "lines": [
           {
             "s": "Ana",
-            "en": "What time do you wake up?",
-            "pt": "Que horas você acorda?"
+            "en": "What time do you usually wake up?",
+            "pt": "Que horas você geralmente acorda?"
           },
           {
             "s": "Paulo",
-            "en": "I usually wake up at six. I always have breakfast.",
+            "en": "I usually wake up at six o'clock. I always have breakfast.",
             "pt": "Geralmente acordo às seis. Sempre tomo café da manhã."
           },
           {
@@ -1347,21 +1687,32 @@ window.GSE.SEED = {
           },
           {
             "s": "Paulo",
-            "en": "No, I go by car. I start at seven.",
-            "pt": "Não, vou de carro. Começo às sete."
+            "en": "Yes, I go to work by bus. I start at seven and I check the production orders.",
+            "pt": "Sim, vou de ônibus. Começo às sete e confiro as ordens de produção."
           },
           {
             "s": "Ana",
-            "en": "Do you work on Saturday?",
-            "pt": "Você trabalha no sábado?"
+            "en": "Do you work on Sunday?",
+            "pt": "Você trabalha no domingo?"
           },
           {
             "s": "Paulo",
-            "en": "No, I don't. I never work on Sunday.",
-            "pt": "Não. Eu nunca trabalho no domingo."
+            "en": "No, I never work on Sunday.",
+            "pt": "Não, eu nunca trabalho no domingo."
           }
         ],
         "questions": [
+          {
+            "type": "mcq",
+            "question": "What time does Paulo usually wake up?",
+            "options": [
+              "six o'clock",
+              "seven o'clock",
+              "eight o'clock"
+            ],
+            "answer": 0,
+            "explanation": "'I usually wake up at six o'clock'."
+          },
           {
             "type": "mcq",
             "question": "How does Paulo go to work?",
@@ -1370,25 +1721,14 @@ window.GSE.SEED = {
               "by car",
               "on foot"
             ],
-            "answer": 1,
-            "explanation": "'No, I go by car'."
+            "answer": 0,
+            "explanation": "'I go to work by bus'."
           },
           {
             "type": "truefalse",
-            "question": "Paulo works on Sunday.",
-            "answer": false,
-            "explanation": "Falso: 'I never work on Sunday'."
-          },
-          {
-            "type": "mcq",
-            "question": "What time does Paulo start work?",
-            "options": [
-              "six",
-              "seven",
-              "eight"
-            ],
-            "answer": 1,
-            "explanation": "'I start at seven'."
+            "question": "Paulo never works on Sunday.",
+            "answer": true,
+            "explanation": "'I never work on Sunday'."
           }
         ]
       },
@@ -1501,6 +1841,9 @@ window.GSE.SEED = {
           "start",
           "work"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você contando a sua rotina de trabalho em inglês (I wake up..., I start work..., I check...)."
       }
     },
     {
@@ -1513,36 +1856,72 @@ window.GSE.SEED = {
       "searchQuery": "there is there are prepositions of place english beginners",
       "vocabulary": [
         {
-          "en": "There is / There are",
-          "pt": "Há (singular) / Há (plural)"
+          "en": "There is",
+          "pt": "Há (singular)"
         },
         {
-          "en": "There isn't / There aren't",
-          "pt": "Não há (sing.) / Não há (pl.)"
+          "en": "There are",
+          "pt": "Há (plural)"
         },
         {
-          "en": "Is there...? / Are there...?",
-          "pt": "Há...? (sing. / pl.)"
+          "en": "There isn't",
+          "pt": "Não há (singular)"
         },
         {
-          "en": "in / on / at",
-          "pt": "dentro / sobre / em um ponto"
+          "en": "There aren't",
+          "pt": "Não há (plural)"
         },
         {
-          "en": "under / over",
-          "pt": "embaixo / por cima"
+          "en": "Is there...?",
+          "pt": "Há...? (singular)"
         },
         {
-          "en": "above / below",
-          "pt": "acima (sem contato) / abaixo"
+          "en": "Are there...?",
+          "pt": "Há...? (plural)"
         },
         {
-          "en": "next to / between",
-          "pt": "ao lado de / entre"
+          "en": "in",
+          "pt": "dentro"
         },
         {
-          "en": "in front of / behind",
-          "pt": "em frente a / atrás de"
+          "en": "on",
+          "pt": "sobre (com contato)"
+        },
+        {
+          "en": "at",
+          "pt": "em (ponto específico)"
+        },
+        {
+          "en": "under",
+          "pt": "embaixo de"
+        },
+        {
+          "en": "above",
+          "pt": "acima (sem contato)"
+        },
+        {
+          "en": "below",
+          "pt": "abaixo de"
+        },
+        {
+          "en": "over",
+          "pt": "por cima de"
+        },
+        {
+          "en": "next to",
+          "pt": "ao lado de"
+        },
+        {
+          "en": "between",
+          "pt": "entre"
+        },
+        {
+          "en": "in front of",
+          "pt": "em frente a"
+        },
+        {
+          "en": "behind",
+          "pt": "atrás de"
         },
         {
           "en": "near",
@@ -1608,36 +1987,42 @@ window.GSE.SEED = {
         "lines": [
           {
             "s": "Supervisor",
-            "en": "Is there a forklift in the warehouse?",
-            "pt": "Há uma empilhadeira no armazém?"
+            "en": "Is there a big warehouse in the company?",
+            "pt": "Há um armazém grande na empresa?"
           },
           {
             "s": "Ana",
-            "en": "Yes, there is. It is near the door.",
-            "pt": "Sim, há. Ela está perto da porta."
+            "en": "Yes, there is. There are many shelves and the boxes are on the shelves.",
+            "pt": "Sim, há. Há muitas prateleiras e as caixas estão nas prateleiras."
           },
           {
             "s": "Supervisor",
-            "en": "Are there many boxes?",
-            "pt": "Há muitas caixas?"
+            "en": "Is there a forklift?",
+            "pt": "Há uma empilhadeira?"
           },
           {
             "s": "Ana",
-            "en": "Yes, there are. The boxes are on the shelves.",
-            "pt": "Sim, há. As caixas estão nas prateleiras."
+            "en": "Yes, there is a forklift near the door. The trucks are in front of the warehouse.",
+            "pt": "Sim, há uma empilhadeira perto da porta. Os caminhões estão em frente ao armazém."
           },
           {
             "s": "Supervisor",
-            "en": "Where are the trucks?",
-            "pt": "Onde estão os caminhões?"
+            "en": "Where is your desk?",
+            "pt": "Onde fica a sua mesa?"
           },
           {
             "s": "Ana",
-            "en": "The trucks are in front of the warehouse.",
-            "pt": "Os caminhões estão em frente ao armazém."
+            "en": "My desk is next to the window.",
+            "pt": "Minha mesa fica ao lado da janela."
           }
         ],
         "questions": [
+          {
+            "type": "truefalse",
+            "question": "There is a big warehouse in the company.",
+            "answer": true,
+            "explanation": "'Yes, there is' (um armazém grande)."
+          },
           {
             "type": "mcq",
             "question": "Where is the forklift?",
@@ -1647,24 +2032,18 @@ window.GSE.SEED = {
               "in the box"
             ],
             "answer": 0,
-            "explanation": "'It is near the door'."
-          },
-          {
-            "type": "truefalse",
-            "question": "The boxes are on the shelves.",
-            "answer": true,
-            "explanation": "'The boxes are on the shelves'."
+            "explanation": "'a forklift near the door'."
           },
           {
             "type": "mcq",
-            "question": "Where are the trucks?",
+            "question": "Where is Ana's desk?",
             "options": [
-              "behind the office",
-              "in front of the warehouse",
-              "under the table"
+              "next to the window",
+              "in front of the door",
+              "under the shelf"
             ],
-            "answer": 1,
-            "explanation": "'in front of the warehouse'."
+            "answer": 0,
+            "explanation": "'My desk is next to the window'."
           }
         ]
       },
@@ -1782,6 +2161,9 @@ window.GSE.SEED = {
           "boxes",
           "shelves"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você descrevendo o seu local de trabalho (There is..., There are..., the boxes are on the shelves...)."
       }
     },
     {
@@ -1850,52 +2232,136 @@ window.GSE.SEED = {
           "pt": "quente / frio"
         },
         {
-          "en": "friendly / polite",
-          "pt": "simpático / educado"
+          "en": "friendly",
+          "pt": "simpático(a)"
         },
         {
-          "en": "hardworking / experienced",
-          "pt": "trabalhador / experiente"
+          "en": "polite",
+          "pt": "educado(a)"
         },
         {
-          "en": "careful / smart",
-          "pt": "cuidadoso / inteligente"
+          "en": "hardworking",
+          "pt": "trabalhador(a)"
         },
         {
-          "en": "busy / tired",
-          "pt": "ocupado / cansado"
+          "en": "experienced",
+          "pt": "experiente"
         },
         {
-          "en": "very / so / really",
-          "pt": "muito / tão / realmente"
+          "en": "careful",
+          "pt": "cuidadoso(a)"
         },
         {
-          "en": "quite / a little / too",
-          "pt": "bastante / um pouco / demais"
+          "en": "smart",
+          "pt": "inteligente"
         },
         {
-          "en": "red, blue, green, yellow",
-          "pt": "vermelho, azul, verde, amarelo"
+          "en": "busy",
+          "pt": "ocupado(a)"
         },
         {
-          "en": "black, white, grey, brown",
-          "pt": "preto, branco, cinza, marrom"
+          "en": "tired",
+          "pt": "cansado(a)"
         },
         {
-          "en": "orange, purple, pink, silver",
-          "pt": "laranja, roxo, rosa, prateado"
+          "en": "very",
+          "pt": "muito"
         },
         {
-          "en": "Quality / Defect",
-          "pt": "Qualidade / Defeito"
+          "en": "so",
+          "pt": "tão"
         },
         {
-          "en": "Sample / Product",
-          "pt": "Amostra / Produto"
+          "en": "really",
+          "pt": "realmente"
         },
         {
-          "en": "Size / Length / Thickness",
-          "pt": "Tamanho / Comprimento / Espessura"
+          "en": "quite",
+          "pt": "bastante"
+        },
+        {
+          "en": "a little / a bit",
+          "pt": "um pouco"
+        },
+        {
+          "en": "too",
+          "pt": "demais"
+        },
+        {
+          "en": "red",
+          "pt": "vermelho"
+        },
+        {
+          "en": "blue",
+          "pt": "azul"
+        },
+        {
+          "en": "green",
+          "pt": "verde"
+        },
+        {
+          "en": "yellow",
+          "pt": "amarelo"
+        },
+        {
+          "en": "black",
+          "pt": "preto"
+        },
+        {
+          "en": "white",
+          "pt": "branco"
+        },
+        {
+          "en": "grey",
+          "pt": "cinza"
+        },
+        {
+          "en": "brown",
+          "pt": "marrom"
+        },
+        {
+          "en": "orange",
+          "pt": "laranja"
+        },
+        {
+          "en": "purple",
+          "pt": "roxo"
+        },
+        {
+          "en": "pink",
+          "pt": "rosa"
+        },
+        {
+          "en": "silver",
+          "pt": "prateado"
+        },
+        {
+          "en": "Quality",
+          "pt": "Qualidade"
+        },
+        {
+          "en": "Defect",
+          "pt": "Defeito"
+        },
+        {
+          "en": "Sample",
+          "pt": "Amostra"
+        },
+        {
+          "en": "Product",
+          "pt": "Produto"
+        },
+        {
+          "en": "Size",
+          "pt": "Tamanho"
+        },
+        {
+          "en": "Length",
+          "pt": "Comprimento"
+        },
+        {
+          "en": "Thickness",
+          "pt": "Espessura"
         },
         {
           "en": "Cable / Wire",
@@ -1918,8 +2384,12 @@ window.GSE.SEED = {
           "pt": "Etiqueta / rótulo"
         },
         {
-          "en": "Packaging / Packing",
-          "pt": "Embalagem / Empacotamento"
+          "en": "Packaging",
+          "pt": "Embalagem"
+        },
+        {
+          "en": "Packing",
+          "pt": "Empacotamento"
         },
         {
           "en": "Packing list",
@@ -2115,6 +2585,9 @@ window.GSE.SEED = {
           "fast",
           "clean"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você descrevendo um objeto do trabalho com 3 adjetivos e uma cor (The box is big, new and red...)."
       }
     },
     {
@@ -2135,36 +2608,72 @@ window.GSE.SEED = {
           "pt": "não está / não estão + -ndo"
         },
         {
-          "en": "now / right now",
-          "pt": "agora / agora mesmo"
+          "en": "now",
+          "pt": "agora"
         },
         {
-          "en": "at the moment / currently",
-          "pt": "no momento / atualmente"
+          "en": "right now",
+          "pt": "agora mesmo"
         },
         {
-          "en": "to load / to unload",
-          "pt": "carregar / descarregar"
+          "en": "at the moment",
+          "pt": "no momento"
+        },
+        {
+          "en": "currently",
+          "pt": "atualmente"
+        },
+        {
+          "en": "today",
+          "pt": "hoje"
+        },
+        {
+          "en": "this week",
+          "pt": "esta semana"
+        },
+        {
+          "en": "to load",
+          "pt": "carregar"
+        },
+        {
+          "en": "to unload",
+          "pt": "descarregar"
         },
         {
           "en": "to pack",
           "pt": "embalar"
         },
         {
-          "en": "to move / to wait",
-          "pt": "mover / esperar"
+          "en": "to move",
+          "pt": "mover"
         },
         {
-          "en": "to fix / to repair",
+          "en": "to wait",
+          "pt": "esperar"
+        },
+        {
+          "en": "to fix / repair",
           "pt": "consertar"
         },
         {
-          "en": "to write / to talk",
-          "pt": "escrever / falar"
+          "en": "to check",
+          "pt": "conferir"
         },
         {
-          "en": "to run / to stop",
-          "pt": "operar (máquina) / parar"
+          "en": "to write",
+          "pt": "escrever"
+        },
+        {
+          "en": "to talk",
+          "pt": "falar / conversar"
+        },
+        {
+          "en": "to run",
+          "pt": "operar (máquina) / correr"
+        },
+        {
+          "en": "to stop",
+          "pt": "parar"
         },
         {
           "en": "In progress",
@@ -2375,6 +2884,9 @@ window.GSE.SEED = {
           "team",
           "trucks"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você dizendo o que está acontecendo agora no seu setor (I am ...ing / the team is ...ing)."
       }
     },
     {
@@ -2387,44 +2899,64 @@ window.GSE.SEED = {
       "searchQuery": "past simple was were regular verbs english beginners",
       "vocabulary": [
         {
-          "en": "was / were",
-          "pt": "era/estava · eram/estavam"
+          "en": "was",
+          "pt": "era / estava (I/he/she/it)"
         },
         {
-          "en": "worked / checked (-ed)",
-          "pt": "trabalhou / conferiu (regulares)"
+          "en": "were",
+          "pt": "eram / estavam (you/we/they)"
         },
         {
-          "en": "went (go)",
-          "pt": "foi (ir)"
+          "en": "worked",
+          "pt": "trabalhou"
         },
         {
-          "en": "had (have)",
-          "pt": "teve (ter)"
+          "en": "checked",
+          "pt": "conferiu"
         },
         {
-          "en": "made (make)",
-          "pt": "fez (fazer)"
+          "en": "went",
+          "pt": "foi (go)"
         },
         {
-          "en": "sent (send)",
-          "pt": "enviou (enviar)"
+          "en": "had",
+          "pt": "teve (have)"
         },
         {
-          "en": "came (come)",
-          "pt": "veio (vir)"
+          "en": "made",
+          "pt": "fez (make)"
+        },
+        {
+          "en": "sent",
+          "pt": "enviou (send)"
+        },
+        {
+          "en": "came",
+          "pt": "veio (come)"
         },
         {
           "en": "yesterday",
           "pt": "ontem"
         },
         {
-          "en": "last week / month",
-          "pt": "semana / mês passado"
+          "en": "last week",
+          "pt": "semana passada"
+        },
+        {
+          "en": "last month",
+          "pt": "mês passado"
         },
         {
           "en": "...days ago",
           "pt": "...dias atrás"
+        },
+        {
+          "en": "arrived",
+          "pt": "chegou"
+        },
+        {
+          "en": "finished",
+          "pt": "terminou"
         },
         {
           "en": "Arrived / Delivered",
@@ -2483,8 +3015,8 @@ window.GSE.SEED = {
           },
           {
             "s": "Ana",
-            "en": "I worked the morning shift. I checked fifty orders.",
-            "pt": "Trabalhei no turno da manhã. Conferi cinquenta pedidos."
+            "en": "Yesterday I worked the morning shift. I checked fifty orders and I sent ten emails.",
+            "pt": "Ontem trabalhei no turno da manhã. Conferi cinquenta pedidos e enviei dez e-mails."
           },
           {
             "s": "Supervisor",
@@ -2493,24 +3025,24 @@ window.GSE.SEED = {
           },
           {
             "s": "Ana",
-            "en": "Yes, we had a meeting at ten o'clock.",
-            "pt": "Sim, tivemos uma reunião às dez."
+            "en": "Yes, we had a meeting at ten o'clock. But the truck arrived late.",
+            "pt": "Sim, tivemos uma reunião às dez. Mas o caminhão chegou atrasado."
           },
           {
             "s": "Supervisor",
-            "en": "And the truck?",
-            "pt": "E o caminhão?"
+            "en": "And last week?",
+            "pt": "E na semana passada?"
           },
           {
             "s": "Ana",
-            "en": "The truck arrived late, but we shipped the products.",
-            "pt": "O caminhão chegou atrasado, mas expedimos os produtos."
+            "en": "Last week we shipped two thousand products.",
+            "pt": "Na semana passada expedimos dois mil produtos."
           }
         ],
         "questions": [
           {
             "type": "mcq",
-            "question": "Which shift did Ana work?",
+            "question": "Which shift did Ana work yesterday?",
             "options": [
               "morning",
               "night",
@@ -2523,18 +3055,18 @@ window.GSE.SEED = {
             "type": "truefalse",
             "question": "The truck arrived late.",
             "answer": true,
-            "explanation": "'The truck arrived late'."
+            "explanation": "'the truck arrived late'."
           },
           {
             "type": "mcq",
-            "question": "How many orders did Ana check?",
+            "question": "How many products did they ship last week?",
             "options": [
-              "fifteen",
-              "fifty",
-              "five hundred"
+              "two hundred",
+              "two thousand",
+              "twenty"
             ],
             "answer": 1,
-            "explanation": "'I checked fifty orders'."
+            "explanation": "'we shipped two thousand products'."
           }
         ]
       },
@@ -2647,6 +3179,9 @@ window.GSE.SEED = {
           "checked",
           "arrived"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você contando o que fez ontem no trabalho (Yesterday I worked..., I checked..., I sent...)."
       }
     },
     {
@@ -2659,8 +3194,12 @@ window.GSE.SEED = {
       "searchQuery": "can cant ability polite requests english beginners",
       "vocabulary": [
         {
-          "en": "can / can't",
-          "pt": "poder/saber / não poder"
+          "en": "can",
+          "pt": "poder / saber"
+        },
+        {
+          "en": "can't",
+          "pt": "não poder"
         },
         {
           "en": "Can you help me?",
@@ -2675,8 +3214,12 @@ window.GSE.SEED = {
           "pt": "Eu gostaria..."
         },
         {
-          "en": "Please / Thank you",
-          "pt": "Por favor / Obrigado(a)"
+          "en": "Please",
+          "pt": "Por favor"
+        },
+        {
+          "en": "Thank you",
+          "pt": "Obrigado(a)"
         },
         {
           "en": "Sorry",
@@ -2907,6 +3450,9 @@ window.GSE.SEED = {
           "would",
           "report"
         ]
+      },
+      "challenge": {
+        "prompt": "Grave você fazendo 2 pedidos educados em inglês (Can you help me, please? / Could you send the report?)."
       }
     }
   ]

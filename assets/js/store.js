@@ -21,7 +21,7 @@ window.GSE = window.GSE || {};
     theme: "gse.theme",
     ver: "gse.version"
   };
-  var DATA_VERSION = 4; // v4: exercício de fala (speaking) + prep para sync
+  var DATA_VERSION = 5; // v5: vocabulário completo + áudio por palavra, diálogos da apostila, desafio final
 
   /* ---------- low-level JSON storage ---------- */
   function read(key, fallback) {
