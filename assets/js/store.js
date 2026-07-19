@@ -20,7 +20,7 @@ window.GSE = window.GSE || {};
     theme: "gse.theme",
     ver: "gse.version"
   };
-  var DATA_VERSION = 1;
+  var DATA_VERSION = 2; // v2: conteúdo migrado para as 10 aulas da apostila (com áudio + reading)
 
   /* ---------- low-level JSON storage ---------- */
   function read(key, fallback) {
@@ -356,8 +356,14 @@ window.GSE = window.GSE || {};
     // apply theme early
     setTheme(getTheme());
 
+    // Migration: if the stored content is from an older seed version, reload the
+    // new default content (the apostila units). Brand-new installs (ver 0) just
+    // seed fresh below. This ensures returning students get the updated content.
     var ver = read(KEY.ver, 0);
-    if (ver !== DATA_VERSION) write(KEY.ver, DATA_VERSION);
+    if (ver !== DATA_VERSION) {
+      if (ver >= 1) { try { resetContentToSeed(); } catch (e) {} }
+      write(KEY.ver, DATA_VERSION);
+    }
 
     // ensure content exists
     getContent();
