@@ -128,15 +128,18 @@
     }
     next();
   }
+  // Versão dos áudios: evita que o navegador/CDN sirvam um mp3 antigo quando o conteúdo muda.
+  var AUDIO_VERSION = "6";
+  function audioUrl(path) { return path + "?v=" + AUDIO_VERSION; }
   function playDialogue(unit) {
     if (!unit || !unit.dialogue || !unit.dialogue.lines) return;
     var base = "assets/audio/" + unit.id + "/";
-    var clips = unit.dialogue.lines.map(function (l, idx) { return { url: base + "d" + (idx + 1) + ".mp3", text: l.en, s: l.s }; });
+    var clips = unit.dialogue.lines.map(function (l, idx) { return { url: audioUrl(base + "d" + (idx + 1) + ".mp3"), text: l.en, s: l.s }; });
     playClips(clips, highlightLine, function () { highlightLine(-1); });
   }
   function playReading(unit) {
     if (!unit || !unit.reading || !unit.reading.textEn) return;
-    playClips([{ url: "assets/audio/" + unit.id + "/reading.mp3", text: unit.reading.textEn, s: "R" }], null, null);
+    playClips([{ url: audioUrl("assets/audio/" + unit.id + "/reading.mp3"), text: unit.reading.textEn, s: "R" }], null, null);
   }
   function highlightLine(i) {
     var box = $("#dialogueBox");
@@ -227,9 +230,13 @@
       (g.hit.length ? "✅ Você usou: <b>" + esc(g.hit.join(", ")) + "</b><br>" : "") +
       (g.miss.length ? "💡 Tente incluir: " + esc(g.miss.join(", ")) : "") + "</div>";
   }
+  function speakKey(unitId) { return "speak:" + (state.user ? state.user.id : "anon") + ":" + unitId; }
+  function challengeKey(unitId) { return "challenge:" + (state.user ? state.user.id : "anon") + ":" + unitId; }
+  function faUI() { return { btn: "#faBtn", status: "#faStatus", result: "#faResult", del: "#faDel", playmine: "#faPlayMine" }; }
+  function chUI() { return { btn: "#chBtn", status: "#chStatus", result: "#chResult", del: "#chDel", playmine: "#chPlayMine" }; }
 
-  /* === Fala guiada: SOMENTE reconhecimento de voz (corrige). Não grava áudio, para não brigar pelo microfone. === */
-  var sr = { recog: null, transcript: "", finalTxt: "", active: false, unitId: null, ended: false, error: "", finalized: false, fallback: null };
+  /* === Correção da fala: SOMENTE reconhecimento de voz (nunca junto da gravação, para não brigar pelo microfone). === */
+  var sr = { recog: null, transcript: "", active: false, unitId: null, ended: false, error: "", finalized: false, fallback: null };
   function abortSpeakRecog() {
     if (sr.fallback) { clearTimeout(sr.fallback); sr.fallback = null; }
     sr.active = false;
@@ -238,18 +245,19 @@
   function startSpeak(unitId) {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { toast("Este navegador não faz a correção de fala. Use o Chrome ou o Edge.", "err"); return; }
-    abortSpeakRecog();
-    sr.unitId = unitId; sr.transcript = ""; sr.finalTxt = ""; sr.active = true; sr.ended = false; sr.error = ""; sr.finalized = false;
+    abortRec2(); abortSpeakRecog();
+    sr.unitId = unitId; sr.transcript = ""; sr.active = true; sr.ended = false; sr.error = ""; sr.finalized = false;
     try {
       var r = new SR(); r.lang = "en-US"; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
+      // Reconstrói o texto do zero a cada evento (não acumula) e NÃO reinicia no silêncio → sem repetição.
       r.onresult = function (ev) {
-        var interim = "";
-        for (var i = ev.resultIndex; i < ev.results.length; i++) { var res = ev.results[i]; if (res.isFinal) sr.finalTxt += res[0].transcript + " "; else interim += res[0].transcript + " "; }
-        sr.transcript = (sr.finalTxt + interim).trim();
+        var txt = "";
+        for (var i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript + " ";
+        sr.transcript = txt.replace(/\s+/g, " ").trim();
         var live = $("#speakLive"); if (live) live.textContent = sr.transcript ? ("… " + sr.transcript) : "";
       };
       r.onerror = function (ev) { sr.error = (ev && ev.error) || "error"; };
-      r.onend = function () { if (sr.active) { try { r.start(); return; } catch (e) {} } sr.ended = true; srFinalize(); };
+      r.onend = function () { sr.ended = true; srFinalize(); };
       r.start(); sr.recog = r;
     } catch (e) { toast("Não consegui iniciar o reconhecimento de voz.", "err"); sr.active = false; return; }
     updateSpeakUI("listening");
@@ -286,99 +294,109 @@
     var sp = state.user ? Store.getSpeaking(state.user.id)[unitId] : null;
     if (sp) box.innerHTML = feedbackHtml(sp.transcript, gradeSpeech(Store.getUnit(unitId), sp.transcript));
   }
+
+  /* === Gravador de áudio (usado pela Fala e pelo Desafio). Nunca roda junto do reconhecimento. === */
+  var rec2 = { mediaRec: null, chunks: [], stream: null, active: false, unitId: null, key: null, ui: null };
+  function abortRec2() {
+    rec2.active = false;
+    if (rec2.mediaRec && rec2.mediaRec.state !== "inactive") { try { rec2.mediaRec.onstop = null; rec2.mediaRec.stop(); } catch (e) {} }
+    if (rec2.stream) { rec2.stream.getTracks().forEach(function (t) { t.stop(); }); rec2.stream = null; }
+    rec2.mediaRec = null; rec2.chunks = [];
+  }
+  async function startRec2(unitId, key, ui) {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { toast("Seu navegador não permite gravar áudio.", "err"); return; }
+    abortSpeakRecog(); abortRec2();
+    try { rec2.stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) { toast("Não consegui acessar o microfone. Permita o acesso e tente de novo.", "err"); return; }
+    rec2.chunks = []; rec2.unitId = unitId; rec2.key = key; rec2.ui = ui; rec2.active = true;
+    try { var mime = (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/webm")) ? "audio/webm" : ""; rec2.mediaRec = mime ? new MediaRecorder(rec2.stream, { mimeType: mime }) : new MediaRecorder(rec2.stream); }
+    catch (e) { try { rec2.mediaRec = new MediaRecorder(rec2.stream); } catch (e2) { rec2.mediaRec = null; } }
+    if (!rec2.mediaRec) { abortRec2(); toast("Não consegui gravar neste navegador.", "err"); return; }
+    rec2.mediaRec.ondataavailable = function (ev) { if (ev.data && ev.data.size) rec2.chunks.push(ev.data); };
+    rec2.mediaRec.onstop = function () { onRec2Stop(); };
+    rec2.mediaRec.start();
+    updateRec2UI("recording", ui);
+  }
+  function stopRec2() { rec2.active = false; if (rec2.mediaRec && rec2.mediaRec.state !== "inactive") { try { rec2.mediaRec.stop(); } catch (e) { onRec2Stop(); } } else { onRec2Stop(); } }
+  function onRec2Stop() {
+    var ui = rec2.ui;
+    if (rec2.stream) { rec2.stream.getTracks().forEach(function (t) { t.stop(); }); rec2.stream = null; }
+    var type = (rec2.mediaRec && rec2.mediaRec.mimeType) || "audio/webm";
+    var blob = rec2.chunks.length ? new Blob(rec2.chunks, { type: type }) : null;
+    if (blob && IDB.ok) IDB.put(rec2.key, blob).catch(function () {});
+    renderRec2(ui, blob ? URL.createObjectURL(blob) : null);
+    updateRec2UI("done", ui);
+  }
+  function renderRec2(ui, url) {
+    if (!ui) return;
+    var box = $(ui.result); if (box) box.innerHTML = url ? '<audio class="rec-audio mt-2" controls preload="metadata" src="' + url + '"></audio>' : '<p class="dim mt-2" style="font-size:13px">Não consegui salvar o áudio. Tente de novo.</p>';
+    var del = $(ui.del); if (del) del.hidden = !url;
+    var pm = $(ui.playmine); if (pm) pm.hidden = !url;
+  }
+  function updateRec2UI(s, ui) {
+    if (!ui) return;
+    var btn = $(ui.btn), status = $(ui.status);
+    if (btn) { if (s === "recording") { btn.innerHTML = "⏹ Parar"; btn.classList.add("is-recording"); } else { btn.innerHTML = "🎤 Gravar de novo"; btn.classList.remove("is-recording"); } }
+    if (status) status.textContent = s === "recording" ? "🔴 Gravando… fale em inglês." : "Áudio salvo — ouça e compare com o exemplo.";
+  }
+  function deleteRec2(unitId, key, ui) {
+    stopAudio();
+    if (IDB.ok) IDB.del(key).catch(function () {});
+    var box = $(ui.result); if (box) box.innerHTML = "";
+    var del = $(ui.del); if (del) del.hidden = true;
+    var pm = $(ui.playmine); if (pm) pm.hidden = true;
+    var btn = $(ui.btn); if (btn) { btn.innerHTML = "🎤 Gravar"; btn.classList.remove("is-recording"); }
+    var status = $(ui.status); if (status) status.textContent = "";
+    toast("Áudio apagado. Grave de novo quando quiser.");
+  }
+  function hydrateRec2(unitId, key, ui) {
+    var box = $(ui.result); if (!box || !IDB.ok) return;
+    IDB.get(key).then(function (blob) { if (blob) { renderRec2(ui, URL.createObjectURL(blob)); var st = $(ui.status); if (st) st.textContent = "Áudio salvo — ouça e compare com o exemplo."; } }).catch(function () {});
+  }
+  function playMyRecording(unitId, key) {
+    if (!IDB.ok) { toast("Você ainda não gravou o seu áudio."); return; }
+    IDB.get(key).then(function (blob) {
+      if (blob) playClips([{ url: URL.createObjectURL(blob), text: "", s: "R" }], null, null);
+      else toast("Você ainda não gravou o seu áudio.");
+    }).catch(function () {});
+  }
   function speakingCard(unit) {
     var sp = unit.speaking;
     return '<div class="section"><div class="card card--pad">' +
       '<div class="spread"><h2 style="font-size:17px">🎤 Fala — Speaking</h2></div>' +
       '<p class="muted mt-1">' + esc(sp.prompt) + "</p>" +
-      '<p class="mt-2" style="font-size:14px">Exemplo: <i>"' + esc(sp.example) + '"</i> ' +
-      '<button class="btn btn--ghost btn--sm" data-action="speak-example" data-id="' + esc(unit.id) + '">🔊 Ouvir</button></p>' +
-      '<div class="row-wrap mt-2"><button class="btn btn--primary" id="speakBtn" data-action="speak-toggle" data-id="' + esc(unit.id) + '">🎤 Falar</button></div>' +
+      '<p class="mt-2" style="font-size:14px">Exemplo: <i>"' + esc(sp.example) + '"</i></p>' +
+      '<div class="row-wrap mt-1">' +
+      '<button class="btn btn--ghost btn--sm" data-action="speak-example" data-id="' + esc(unit.id) + '">🔊 Ouvir exemplo</button>' +
+      '<button class="btn btn--ghost btn--sm" id="faPlayMine" data-action="fa-play-mine" data-id="' + esc(unit.id) + '" hidden>🔊 Ouvir minha gravação</button>' +
+      "</div>" +
+      '<hr style="border:0;border-top:1px solid var(--border);margin:12px 0">' +
+      '<p style="font-size:13.5px"><b>1) Correção:</b> clique em Falar, diga a frase em inglês e clique em Parar (melhor no Chrome/Edge).</p>' +
+      '<div class="row-wrap mt-1"><button class="btn btn--primary" id="speakBtn" data-action="speak-toggle" data-id="' + esc(unit.id) + '">🎤 Falar</button></div>' +
       '<div id="speakStatus" class="muted mt-1" style="font-size:13px"></div>' +
       '<div id="speakLive" class="dim mt-1" style="font-size:13px"></div>' +
       '<div id="speakResult"></div>' +
-      '<p class="dim mt-2" style="font-size:12px">Clique em Falar, diga a frase em inglês e clique em Parar. A correção usa o reconhecimento de voz do navegador (melhor no Chrome/Edge; no iPhone/Safari pode não funcionar).</p>' +
+      '<p style="font-size:13.5px" class="mt-3"><b>2) Grave a sua fala</b> para ouvir e comparar com o exemplo:</p>' +
+      '<div class="row-wrap mt-1"><button class="btn btn--accent" id="faBtn" data-action="fa-rec-toggle" data-id="' + esc(unit.id) + '">🎤 Gravar</button>' +
+      '<button class="btn btn--ghost" id="faDel" data-action="fa-rec-del" data-id="' + esc(unit.id) + '" hidden>🗑️ Apagar</button></div>' +
+      '<div id="faStatus" class="muted mt-1" style="font-size:13px"></div>' +
+      '<div id="faResult"></div>' +
       "</div></div>";
-  }
-
-  /* === Desafio final: SOMENTE gravação. O áudio fica guardado (IndexedDB) para o aluno consultar. === */
-  var mr = { mediaRec: null, chunks: [], stream: null, active: false, unitId: null };
-  function challengeKey(unitId) { return "challenge:" + (state.user ? state.user.id : "anon") + ":" + unitId; }
-  function abortChallenge() {
-    mr.active = false;
-    if (mr.mediaRec && mr.mediaRec.state !== "inactive") { try { mr.mediaRec.onstop = null; mr.mediaRec.stop(); } catch (e) {} }
-    if (mr.stream) { mr.stream.getTracks().forEach(function (t) { t.stop(); }); mr.stream = null; }
-    mr.mediaRec = null; mr.chunks = [];
-  }
-  async function startChallenge(unitId) {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) { toast("Seu navegador não permite gravar áudio.", "err"); return; }
-    try { mr.stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-    catch (e) { toast("Não consegui acessar o microfone. Permita o acesso e tente de novo.", "err"); return; }
-    mr.chunks = []; mr.unitId = unitId; mr.active = true;
-    try { var mime = (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/webm")) ? "audio/webm" : ""; mr.mediaRec = mime ? new MediaRecorder(mr.stream, { mimeType: mime }) : new MediaRecorder(mr.stream); }
-    catch (e) { try { mr.mediaRec = new MediaRecorder(mr.stream); } catch (e2) { mr.mediaRec = null; } }
-    if (!mr.mediaRec) { abortChallenge(); toast("Não consegui gravar neste navegador.", "err"); return; }
-    mr.mediaRec.ondataavailable = function (ev) { if (ev.data && ev.data.size) mr.chunks.push(ev.data); };
-    mr.mediaRec.onstop = function () { onChallengeStopped(unitId); };
-    mr.mediaRec.start();
-    updateChalUI("recording");
-  }
-  function stopChallenge() {
-    mr.active = false;
-    if (mr.mediaRec && mr.mediaRec.state !== "inactive") { try { mr.mediaRec.stop(); } catch (e) { onChallengeStopped(mr.unitId); } }
-    else { onChallengeStopped(mr.unitId); }
-  }
-  function onChallengeStopped(unitId) {
-    if (mr.stream) { mr.stream.getTracks().forEach(function (t) { t.stop(); }); mr.stream = null; }
-    var type = (mr.mediaRec && mr.mediaRec.mimeType) || "audio/webm";
-    var blob = mr.chunks.length ? new Blob(mr.chunks, { type: type }) : null;
-    if (blob && IDB.ok) IDB.put(challengeKey(unitId), blob).catch(function () {});
-    renderChallengeResult(unitId, blob ? URL.createObjectURL(blob) : null);
-    updateChalUI("done");
-  }
-  function renderChallengeResult(unitId, url) {
-    var box = $("#chalResult"); if (!box) return;
-    box.innerHTML = url ? '<audio class="rec-audio mt-2" controls preload="metadata" src="' + url + '"></audio>' : '<p class="dim mt-2" style="font-size:13px">Não consegui salvar o áudio. Tente de novo.</p>';
-    var del = $("#chalDelete"); if (del) del.hidden = !url;
-  }
-  function updateChalUI(s) {
-    var btn = $("#chalBtn"), status = $("#chalStatus");
-    if (!btn) return;
-    if (s === "recording") { btn.innerHTML = "⏹ Parar"; btn.classList.add("is-recording"); if (status) status.textContent = "🔴 Gravando… fale em inglês."; }
-    else { btn.innerHTML = "🎤 Gravar de novo"; btn.classList.remove("is-recording"); if (status) status.textContent = "Áudio salvo — você pode ouvir quando quiser."; }
-  }
-  function deleteChallenge(unitId) {
-    stopAudio();
-    if (IDB.ok) IDB.del(challengeKey(unitId)).catch(function () {});
-    var box = $("#chalResult"); if (box) box.innerHTML = "";
-    var del = $("#chalDelete"); if (del) del.hidden = true;
-    var btn = $("#chalBtn"); if (btn) { btn.innerHTML = "🎤 Gravar"; btn.classList.remove("is-recording"); }
-    var status = $("#chalStatus"); if (status) status.textContent = "";
-    toast("Áudio apagado. Grave de novo quando quiser.");
-  }
-  function hydrateChallenge(unitId) {
-    var box = $("#chalResult"); if (!box || !IDB.ok) return;
-    IDB.get(challengeKey(unitId)).then(function (blob) {
-      if (blob) {
-        box.innerHTML = '<audio class="rec-audio mt-2" controls preload="metadata" src="' + URL.createObjectURL(blob) + '"></audio>';
-        var del = $("#chalDelete"); if (del) del.hidden = false;
-        var st = $("#chalStatus"); if (st) st.textContent = "Áudio salvo — você pode ouvir quando quiser.";
-      }
-    }).catch(function () {});
   }
   function challengeCard(unit) {
     var ch = unit.challenge;
     return '<div class="section"><div class="card card--pad">' +
       '<div class="spread"><h2 style="font-size:17px">🎯 Desafio final</h2></div>' +
       '<p class="muted mt-1">' + esc(ch.prompt) + "</p>" +
-      '<div class="row-wrap mt-2"><button class="btn btn--accent" id="chalBtn" data-action="chal-toggle" data-id="' + esc(unit.id) + '">🎤 Gravar</button>' +
-      '<button class="btn btn--ghost" id="chalDelete" data-action="chal-delete" data-id="' + esc(unit.id) + '" hidden>🗑️ Apagar</button></div>' +
-      '<div id="chalStatus" class="muted mt-1" style="font-size:13px"></div>' +
-      '<div id="chalResult"></div>' +
-      '<p class="dim mt-2" style="font-size:12px">Grave você falando em inglês sobre o tema. O áudio fica guardado neste aparelho para você ouvir e comparar depois.</p>' +
+      '<div class="row-wrap mt-2"><button class="btn btn--accent" id="chBtn" data-action="ch-rec-toggle" data-id="' + esc(unit.id) + '">🎤 Gravar</button>' +
+      '<button class="btn btn--ghost" id="chPlayMine" data-action="ch-play-mine" data-id="' + esc(unit.id) + '" hidden>🔊 Ouvir minha gravação</button>' +
+      '<button class="btn btn--ghost" id="chDel" data-action="ch-rec-del" data-id="' + esc(unit.id) + '" hidden>🗑️ Apagar</button></div>' +
+      '<div id="chStatus" class="muted mt-1" style="font-size:13px"></div>' +
+      '<div id="chResult"></div>' +
+      '<p class="dim mt-2" style="font-size:12px">O áudio fica guardado neste aparelho para você ouvir e comparar depois.</p>' +
       "</div></div>";
   }
-  function abortSpeaking() { abortSpeakRecog(); abortChallenge(); }
+  function abortSpeaking() { abortSpeakRecog(); abortRec2(); }
 
   /* ---------------- state ---------------- */
   var state = { user: null, tab: "home", screen: "main", unitId: null, quiz: null, search: "", filter: "all" };
@@ -997,8 +1015,8 @@
     // ao abrir uma unidade (aluno), recarrega a correção salva e o áudio do desafio
     if (state.user && state.user.role === "student" && state.screen === "unit" && state.unitId) {
       var unit = Store.getUnit(state.unitId);
-      if (unit && unit.speaking) hydrateSpeak(state.unitId);
-      if (unit && unit.challenge) hydrateChallenge(state.unitId);
+      if (unit && unit.speaking) { hydrateSpeak(state.unitId); hydrateRec2(state.unitId, speakKey(state.unitId), faUI()); }
+      if (unit && unit.challenge) hydrateRec2(state.unitId, challengeKey(state.unitId), chUI());
     }
   }
 
@@ -1050,16 +1068,20 @@
       case "stop-audio": stopAudio(); highlightLine(-1); break;
       case "toggle-pt": { var db = $("#dialogueBox"); if (db) db.classList.toggle("show-pt"); break; }
       case "speak-toggle": { stopAudio(); var sid = t.getAttribute("data-id"); if (sr.active) stopSpeak(); else startSpeak(sid); break; }
-      case "chal-toggle": { stopAudio(); var cid = t.getAttribute("data-id"); if (mr.active) stopChallenge(); else startChallenge(cid); break; }
-      case "chal-delete": deleteChallenge(t.getAttribute("data-id")); break;
+      case "fa-rec-toggle": { stopAudio(); var faid = t.getAttribute("data-id"); if (rec2.active) stopRec2(); else startRec2(faid, speakKey(faid), faUI()); break; }
+      case "fa-rec-del": { var fdid = t.getAttribute("data-id"); deleteRec2(fdid, speakKey(fdid), faUI()); break; }
+      case "fa-play-mine": { var fpid = t.getAttribute("data-id"); playMyRecording(fpid, speakKey(fpid)); break; }
+      case "ch-rec-toggle": { stopAudio(); var cid = t.getAttribute("data-id"); if (rec2.active) stopRec2(); else startRec2(cid, challengeKey(cid), chUI()); break; }
+      case "ch-rec-del": { var cdid = t.getAttribute("data-id"); deleteRec2(cdid, challengeKey(cdid), chUI()); break; }
+      case "ch-play-mine": { var cpid = t.getAttribute("data-id"); playMyRecording(cpid, challengeKey(cpid)); break; }
       case "speak-example": {
         var su = Store.getUnit(t.getAttribute("data-id"));
-        if (su && su.speaking) playClips([{ url: "assets/audio/" + su.id + "/speaking.mp3", text: su.speaking.example, s: "R" }], null, null);
+        if (su && su.speaking) playClips([{ url: audioUrl("assets/audio/" + su.id + "/speaking.mp3"), text: su.speaking.example, s: "R" }], null, null);
         break;
       }
       case "play-vocab": {
         var vu = Store.getUnit(t.getAttribute("data-id")), vi = parseInt(t.getAttribute("data-i"), 10);
-        if (vu && vu.vocabulary && vu.vocabulary[vi]) playClips([{ url: "assets/audio/" + vu.id + "/vocab-" + vi + ".mp3", text: vu.vocabulary[vi].en, s: "R" }], null, null);
+        if (vu && vu.vocabulary && vu.vocabulary[vi]) playClips([{ url: audioUrl("assets/audio/" + vu.id + "/vocab-" + vi + ".mp3"), text: vu.vocabulary[vi].en, s: "R" }], null, null);
         break;
       }
       case "yt-search": {
@@ -1275,9 +1297,9 @@
   var _refreshTimer = null;
   GSE.App = {
     refresh: function () {
-      if ((sr && sr.active) || (mr && mr.active)) return; // não re-renderiza durante a fala/gravação
+      if ((sr && sr.active) || (rec2 && rec2.active)) return; // não re-renderiza durante a fala/gravação
       if (_refreshTimer) return;
-      _refreshTimer = setTimeout(function () { _refreshTimer = null; if ((sr && sr.active) || (mr && mr.active)) return; try { render(); } catch (e) {} }, 250);
+      _refreshTimer = setTimeout(function () { _refreshTimer = null; if ((sr && sr.active) || (rec2 && rec2.active)) return; try { render(); } catch (e) {} }, 250);
     },
     role: function () { return state.user ? state.user.role : null; },
     userId: function () { return state.user ? state.user.id : null; },
