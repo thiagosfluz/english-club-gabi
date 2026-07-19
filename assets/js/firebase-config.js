@@ -26,10 +26,11 @@
    a segurança vem das Regras do Firestore acima.
    ============================================================ */
 window.GSE_FIREBASE = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+  apiKey: "AIzaSyANWVVg0zIewd3Wniic0ANMonlFNaeciGk",
+  authDomain: "english-club-da-gabi.firebaseapp.com",
+  projectId: "english-club-da-gabi",
+  storageBucket: "english-club-da-gabi.firebasestorage.app",
+  messagingSenderId: "768727491814",
+  appId: "1:768727491814:web:e86e5d291b3e454a0cc727",
+  measurementId: "G-6B2G9RYG0Y"
 };
