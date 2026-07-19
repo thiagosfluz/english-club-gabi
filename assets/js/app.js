@@ -74,45 +74,95 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
   }
 
-  /* ---------------- audio (Text-to-Speech / voz do navegador) ---------------- */
+  /* ---------------- audio (áudio neural real em MP3, com fallback p/ voz do navegador) ----------------
+     Os clipes ficam em assets/audio/<unitId>/d<N>.mp3 (falas) e reading.mp3.
+     Cada fala foi gerada com voz masculina ou feminina conforme o interlocutor. */
   var synth = window.speechSynthesis || null;
   var voicesCache = [];
   function loadVoices() { try { voicesCache = synth ? synth.getVoices() : []; } catch (e) { voicesCache = []; } }
   if (synth) { loadVoices(); if (typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = loadVoices; }
-  function enVoices() {
-    var en = voicesCache.filter(function (v) { return /^en([-_]|$)/i.test(v.lang || ""); });
-    return en.length ? en : voicesCache;
+  function isFemaleSpeaker(s) { return /^(ana|maria|gabi|gabriella|jenny|laura|sara|emily|she)$/i.test((s || "").trim()); }
+
+  var audioEl = null, audioActive = false;
+  function setPlayingUI(on) {
+    document.querySelectorAll('[data-action="play-dialogue"], [data-action="read-aloud"]').forEach(function (b) {
+      b.classList.toggle("is-playing", !!on);
+    });
   }
-  function stopAudio() { try { if (synth) synth.cancel(); } catch (e) {} }
-  // Speak an array of {s, en} lines in sequence, alternating a voice per speaker.
-  function speakLines(lines, onLine, onDone) {
-    if (!synth || typeof SpeechSynthesisUtterance === "undefined") {
-      toast("Seu navegador não suporta áudio de voz.", "err"); return;
+  function stopAudio() {
+    audioActive = false;
+    if (audioEl) { try { audioEl.pause(); } catch (e) {} audioEl.onended = null; audioEl.onerror = null; audioEl = null; }
+    try { if (synth) synth.cancel(); } catch (e) {}
+    highlightLine(-1); setPlayingUI(false);
+  }
+  // Fallback: browser voice for one line (used only if an MP3 fails to load).
+  function ttsOne(text, speaker, cb) {
+    if (!synth || typeof SpeechSynthesisUtterance === "undefined") { if (cb) cb(); return; }
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; u.rate = 0.92;
+    var voices = voicesCache.filter(function (v) { return /^en([-_]|$)/i.test(v.lang || ""); });
+    if (voices.length) {
+      var fem = voices.filter(function (v) { return /zira|jenny|aria|female|hazel|susan/i.test(v.name || ""); });
+      var mal = voices.filter(function (v) { return /david|guy|mark|george|christopher|male/i.test(v.name || ""); });
+      var pool = isFemaleSpeaker(speaker) ? (fem.length ? fem : voices) : (mal.length ? mal : voices);
+      u.voice = pool[0];
     }
-    stopAudio();
-    if (!voicesCache.length) loadVoices();
-    var voices = enVoices();
-    var speakers = {};
-    lines.forEach(function (l) { var k = l.s || "_"; if (!(k in speakers)) speakers[k] = Object.keys(speakers).length; });
+    u.onend = function () { if (cb) cb(); };
+    u.onerror = function () { if (cb) cb(); };
+    synth.speak(u);
+  }
+  // Play a list of {url, text, s} clips in sequence; start/stop controlled by audioActive.
+  function playClips(clips, onLine, onDone) {
+    stopAudio(); audioActive = true; setPlayingUI(true);
     var i = 0;
     function next() {
-      if (i >= lines.length) { if (onLine) onLine(-1); if (onDone) onDone(); return; }
-      var line = lines[i];
-      var u = new SpeechSynthesisUtterance(line.en);
-      u.lang = "en-US"; u.rate = 0.95; u.pitch = 1;
-      if (voices.length) { u.voice = voices[speakers[line.s || "_"] % voices.length]; }
+      if (!audioActive) return;
+      if (i >= clips.length) { audioActive = false; setPlayingUI(false); if (onLine) onLine(-1); if (onDone) onDone(); return; }
       if (onLine) onLine(i);
-      u.onend = function () { i++; next(); };
-      u.onerror = function () { i++; next(); };
-      synth.speak(u);
+      var c = clips[i], advance = function () { i++; next(); };
+      audioEl = new Audio(c.url);
+      audioEl.onended = advance;
+      audioEl.onerror = function () { ttsOne(c.text, c.s, advance); };
+      var p = audioEl.play();
+      if (p && p.catch) p.catch(function () { if (audioEl) audioEl.onerror = null; ttsOne(c.text, c.s, advance); });
     }
     next();
+  }
+  function playDialogue(unit) {
+    if (!unit || !unit.dialogue || !unit.dialogue.lines) return;
+    var base = "assets/audio/" + unit.id + "/";
+    var clips = unit.dialogue.lines.map(function (l, idx) { return { url: base + "d" + (idx + 1) + ".mp3", text: l.en, s: l.s }; });
+    playClips(clips, highlightLine, function () { highlightLine(-1); });
+  }
+  function playReading(unit) {
+    if (!unit || !unit.reading || !unit.reading.textEn) return;
+    playClips([{ url: "assets/audio/" + unit.id + "/reading.mp3", text: unit.reading.textEn, s: "R" }], null, null);
   }
   function highlightLine(i) {
     var box = $("#dialogueBox");
     if (!box) return;
     box.querySelectorAll(".dline").forEach(function (el) { el.classList.remove("is-active"); });
-    if (i >= 0) { var cur = box.querySelector('.dline[data-i="' + i + '"]'); if (cur) cur.classList.add("is-active"); }
+    if (i >= 0) {
+      var cur = box.querySelector('.dline[data-i="' + i + '"]');
+      if (cur) { cur.classList.add("is-active"); try { cur.scrollIntoView({ block: "nearest" }); } catch (e) {} }
+    }
+  }
+  function dialogueLinesHtml(dlg) {
+    return (dlg.lines || []).map(function (l, i) {
+      return '<p class="dline" data-i="' + i + '"><b>' + esc(l.s) + ":</b> <span class=\"den\">" + esc(l.en) + "</span>" +
+        (l.pt ? ' <span class="dpt">' + esc(l.pt) + "</span>" : "") + "</p>";
+    }).join("");
+  }
+  // Reusable audio player card (used in the unit detail and in the listening quiz).
+  function audioPlayerCard(unit, note) {
+    var dlg = unit.dialogue;
+    return '<div class="card card--pad">' +
+      '<div class="spread"><h2 style="font-size:16px">🎧 Áudio — ' + esc(dlg.title) + "</h2>" +
+      '<div class="row"><button class="btn btn--sm btn--primary" data-action="play-dialogue" data-id="' + esc(unit.id) + '">▶ Ouvir</button>' +
+      '<button class="btn btn--sm btn--ghost" data-action="stop-audio" aria-label="Parar áudio">⏹ Parar</button></div></div>' +
+      (note ? '<p class="muted" style="font-size:12.5px">' + esc(note) + "</p>" : "") +
+      '<div class="dialogue mt-2" id="dialogueBox">' + dialogueLinesHtml(dlg) + "</div>" +
+      '<button class="btn btn--ghost btn--sm mt-2" data-action="toggle-pt">🇧🇷 Tradução</button></div>';
   }
 
   /* ---------------- state ---------------- */
@@ -370,22 +420,13 @@
     }).join("");
 
     // audio (dialogue) section
-    var dlg = unit.dialogue, audioHtml = "";
-    if (dlg && dlg.lines && dlg.lines.length) {
+    var audioHtml = "";
+    if (unit.dialogue && unit.dialogue.lines && unit.dialogue.lines.length) {
       var bList = unitBest(u.id, unit.id + "#listening");
-      var lines = dlg.lines.map(function (l, i) {
-        return '<p class="dline" data-i="' + i + '"><b>' + esc(l.s) + ":</b> <span class=\"den\">" + esc(l.en) + "</span>" +
-          (l.pt ? ' <span class="dpt">' + esc(l.pt) + "</span>" : "") + "</p>";
-      }).join("");
-      audioHtml = '<div class="section"><div class="card card--pad">' +
-        '<div class="spread"><h2 style="font-size:17px">🎧 Áudio — ' + esc(dlg.title) + "</h2>" +
-        '<div class="row"><button class="btn btn--sm btn--primary" data-action="play-dialogue" data-id="' + esc(unit.id) + '">▶ Ouvir</button>' +
-        '<button class="btn btn--sm btn--ghost" data-action="stop-audio" aria-label="Parar áudio">⏹</button></div></div>' +
-        '<p class="muted" style="font-size:12.5px">Pessoas conversando sobre o tema. O app fala com a voz do navegador; clique em Ouvir.</p>' +
-        '<div class="dialogue mt-2" id="dialogueBox">' + lines + "</div>" +
-        '<div class="row-wrap mt-2"><button class="btn btn--ghost btn--sm" data-action="toggle-pt">🇧🇷 Tradução</button>' +
-        '<button class="btn btn--accent btn--sm" data-action="start-quiz" data-id="' + esc(unit.id) + '" data-kind="listening">🎧 Exercícios de áudio' +
-        (bList ? " · recorde " + bList.best + "/" + bList.total : "") + "</button></div></div></div>";
+      audioHtml = '<div class="section">' +
+        audioPlayerCard(unit, "Pessoas conversando sobre o tema, com vozes reais (masculina para homens, feminina para mulheres). Clique em Ouvir; use Parar quando quiser.") +
+        '<div class="mt-2 center"><button class="btn btn--accent" data-action="start-quiz" data-id="' + esc(unit.id) + '" data-kind="listening">🎧 Exercícios de áudio' +
+        (bList ? " · recorde " + bList.best + "/" + bList.total : "") + "</button></div></div>";
     }
 
     // reading section
@@ -504,10 +545,15 @@
         "<div><b>" + msg + "</b></div><div class=\"muted\">Você acertou " + pct + "%</div></div>";
     }
 
+    // In the listening exercise, show the audio player (start/stop) above the questions.
+    var listenPlayer = (kind === "listening" && unit.dialogue && unit.dialogue.lines)
+      ? '<div class="section">' + audioPlayerCard(unit, "Ouça a conversa quantas vezes quiser e responda. Use ▶ Ouvir e ⏹ Parar.") + "</div>"
+      : "";
+
     var body = '<div class="view container">' +
       '<button class="btn btn--sm btn--ghost" data-action="back-unit">← ' + esc(unit.titlePt) + "</button>" +
       pageHead(quizLabel(kind) + ": " + unit.titlePt, graded ? "Veja suas respostas e explicações abaixo." : "Responda todas as perguntas e clique em Corrigir.") +
-      banner +
+      banner + listenPlayer +
       '<form data-form="quiz" data-unit="' + esc(unit.id) + '" data-kind="' + esc(kind) + '"><div class="quiz">' +
       exs.map(function (ex, i) { return renderExercise(ex, i, graded, ans); }).join("") + "</div>";
 
@@ -754,16 +800,8 @@
         if (state.user && state.user.role === "student" && key) Store.markWatched(state.user.id, key);
         break;
       }
-      case "play-dialogue": {
-        var du = Store.getUnit(t.getAttribute("data-id"));
-        if (du && du.dialogue && du.dialogue.lines) speakLines(du.dialogue.lines, highlightLine, function () { highlightLine(-1); });
-        break;
-      }
-      case "read-aloud": {
-        var ru = Store.getUnit(t.getAttribute("data-id"));
-        if (ru && ru.reading && ru.reading.textEn) speakLines([{ s: "R", en: ru.reading.textEn }]);
-        break;
-      }
+      case "play-dialogue": playDialogue(Store.getUnit(t.getAttribute("data-id"))); break;
+      case "read-aloud": playReading(Store.getUnit(t.getAttribute("data-id"))); break;
       case "stop-audio": stopAudio(); highlightLine(-1); break;
       case "toggle-pt": { var db = $("#dialogueBox"); if (db) db.classList.toggle("show-pt"); break; }
       case "yt-search": {
@@ -893,6 +931,7 @@
     }
 
     if (kind === "quiz") {
+      stopAudio();
       var unit = Store.getUnit(form.getAttribute("data-unit"));
       var qkind = form.getAttribute("data-kind") || "ex";
       var questions = quizQuestions(unit, qkind);

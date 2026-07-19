@@ -68,7 +68,7 @@ Conteúdo baseado na **Apostila de Inglês Básico — Inglês para o Ambiente I
 
 **No total:** 25 vídeos verificados, 80 exercícios, 30 perguntas de áudio (listening) e 30 de reading — todos de correção automática. Os vídeos são de canais reconhecidos (BBC Learning English, Oxford Online English, Shaw English, EnglishClass101, Woodward English, entre outros).
 
-> 🎧 **Sobre o áudio:** os diálogos são falados pela **voz do navegador** (Text-to-Speech). É automático e funciona offline; a qualidade da voz depende do navegador/sistema. Não são gravações de pessoas reais — para isso seria preciso subir arquivos de áudio.
+> 🎧 **Sobre o áudio:** cada diálogo tem **áudio real com voz neural** (arquivos `.mp3` em `assets/audio/`), com **voz masculina para os homens e feminina para a Ana**. No exercício de áudio o aluno pode **▶ Ouvir** e **⏹ Parar** quando quiser, e a linha que está tocando fica destacada. (Se algum arquivo não carregar, o app usa a voz do navegador como reserva.)
 
 > 📄 **Apostila em PDF:** o arquivo `Apostila_Ingles_Basico_A1.pdf` é a **versão do professor (com gabarito)** e por isso **não é incluído no repositório publicado** (fica só no seu computador). O conteúdo dela já está dentro do app.
 
