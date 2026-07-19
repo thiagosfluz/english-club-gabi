@@ -415,6 +415,13 @@ input, select, textarea { font-family: inherit; font-size: 16px; }
 }
 .vocab__en { font-weight: 800; }
 .vocab__pt { color: var(--text-2); font-size: 13.5px; }
+.vocab__click {
+  font-family: inherit; text-align: left; width: 100%; cursor: pointer;
+  transition: border-color .12s, background .12s, transform .06s;
+}
+.vocab__click:hover { border-color: var(--brand-400); background: var(--surface-2); }
+.vocab__click:active { transform: scale(.99); }
+.vocab__spk { color: var(--brand-500); font-size: 12px; }
 
 /* ---------- Dialogue (audio) & Reading ---------- */
 .dialogue { display: flex; flex-direction: column; gap: 8px; }

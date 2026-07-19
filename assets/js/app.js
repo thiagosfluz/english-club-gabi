@@ -198,68 +198,98 @@
     };
   })();
 
-  var rec = { mediaRec: null, chunks: [], stream: null, recog: null, transcript: "", active: false, unitId: null };
+  var rec = {
+    mediaRec: null, chunks: [], stream: null, recog: null, transcript: "", finalTxt: "",
+    active: false, unitId: null, blob: null, blobBuilt: false,
+    recogSupported: false, recogEnded: false, recogError: "", finalized: false, fallback: null
+  };
   function speakingKey(unitId) { return (state.user ? state.user.id : "anon") + ":" + unitId; }
   function hasRecognition() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); }
 
   function abortRecording() {
-    rec.active = false;
-    if (rec.recog) { try { rec.recog.onresult = null; rec.recog.onend = null; rec.recog.stop(); } catch (e) {} rec.recog = null; }
+    if (rec.fallback) { clearTimeout(rec.fallback); rec.fallback = null; }
+    rec.active = false; rec.finalized = true;
+    if (rec.recog) { try { rec.recog.onresult = null; rec.recog.onend = null; rec.recog.onerror = null; rec.recog.stop(); } catch (e) {} rec.recog = null; }
     if (rec.mediaRec && rec.mediaRec.state !== "inactive") { try { rec.mediaRec.onstop = null; rec.mediaRec.stop(); } catch (e) {} }
     if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
     rec.mediaRec = null; rec.chunks = [];
   }
   function startRecognition() {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { rec.recog = null; return; }
+    if (!SR) { rec.recogSupported = false; return; }
+    rec.recogSupported = true; rec.finalTxt = "";
     try {
-      var r = new SR(); r.lang = "en-US"; r.continuous = true; r.interimResults = false; r.maxAlternatives = 1;
-      var acc = "";
+      var r = new SR(); r.lang = "en-US"; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
       r.onresult = function (ev) {
-        for (var i = ev.resultIndex; i < ev.results.length; i++) { if (ev.results[i].isFinal) acc += ev.results[i][0].transcript + " "; }
-        rec.transcript = acc.trim();
+        var interim = "";
+        for (var i = ev.resultIndex; i < ev.results.length; i++) {
+          var res = ev.results[i];
+          if (res.isFinal) rec.finalTxt += res[0].transcript + " ";
+          else interim += res[0].transcript + " ";
+        }
+        rec.transcript = (rec.finalTxt + interim).trim();
       };
-      r.onerror = function () {};
+      r.onerror = function (ev) { rec.recogError = (ev && ev.error) || "error"; };
+      r.onend = function () {
+        // enquanto o aluno não parou, o Chrome pode encerrar sozinho após silêncio: reinicia p/ continuar ouvindo
+        if (rec.active) { try { r.start(); return; } catch (e) {} }
+        rec.recogEnded = true; maybeFinalize();
+      };
       r.start(); rec.recog = r;
-    } catch (e) { rec.recog = null; }
+    } catch (e) { rec.recogSupported = false; rec.recog = null; }
   }
   async function startRecording(unitId) {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
       toast("Seu navegador não permite gravar áudio.", "err"); return;
     }
+    // reinicia o estado
+    rec.chunks = []; rec.transcript = ""; rec.finalTxt = ""; rec.unitId = unitId; rec.active = true;
+    rec.blob = null; rec.blobBuilt = false; rec.recogEnded = false; rec.recogError = ""; rec.finalized = false;
+    if (rec.fallback) { clearTimeout(rec.fallback); rec.fallback = null; }
+    // 1) reconhecimento primeiro (pega o microfone o quanto antes, para a correção)
+    startRecognition();
+    // 2) captura para salvar o áudio
     try { rec.stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
-    catch (e) { toast("Não consegui acessar o microfone. Permita o acesso e tente de novo.", "err"); return; }
-    rec.chunks = []; rec.transcript = ""; rec.unitId = unitId; rec.active = true;
+    catch (e) { abortRecording(); toast("Não consegui acessar o microfone. Permita o acesso e tente de novo.", "err"); return; }
     try {
       var mime = (window.MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported("audio/webm")) ? "audio/webm" : "";
       rec.mediaRec = mime ? new MediaRecorder(rec.stream, { mimeType: mime }) : new MediaRecorder(rec.stream);
-    } catch (e) { rec.mediaRec = new MediaRecorder(rec.stream); }
-    rec.mediaRec.ondataavailable = function (ev) { if (ev.data && ev.data.size) rec.chunks.push(ev.data); };
-    rec.mediaRec.onstop = function () { onRecordingStopped(unitId); };
-    rec.mediaRec.start();
-    startRecognition();
+    } catch (e) { try { rec.mediaRec = new MediaRecorder(rec.stream); } catch (e2) { rec.mediaRec = null; } }
+    if (rec.mediaRec) {
+      rec.mediaRec.ondataavailable = function (ev) { if (ev.data && ev.data.size) rec.chunks.push(ev.data); };
+      rec.mediaRec.onstop = function () { buildBlob(); maybeFinalize(); };
+      try { rec.mediaRec.start(); } catch (e) { rec.mediaRec = null; }
+    }
     updateRecUI("recording");
   }
-  function stopRecording() {
-    if (rec.recog) { try { rec.recog.stop(); } catch (e) {} }
-    if (rec.mediaRec && rec.mediaRec.state !== "inactive") { try { rec.mediaRec.stop(); } catch (e) {} }
-    else { onRecordingStopped(rec.unitId); }
-    rec.active = false;
-  }
-  function onRecordingStopped(unitId) {
+  function buildBlob() {
     if (rec.stream) { rec.stream.getTracks().forEach(function (t) { t.stop(); }); rec.stream = null; }
     var type = (rec.mediaRec && rec.mediaRec.mimeType) || "audio/webm";
-    var blob = rec.chunks.length ? new Blob(rec.chunks, { type: type }) : null;
+    rec.blob = rec.chunks.length ? new Blob(rec.chunks, { type: type }) : null;
+    rec.blobBuilt = true;
+  }
+  function stopRecording() {
+    rec.active = false;
     updateRecUI("processing");
-    if (blob && IDB.ok) IDB.put(speakingKey(unitId), blob).catch(function () {});
-    // dá um tempo para o reconhecimento de voz finalizar, depois corrige
-    setTimeout(function () {
-      var unit = Store.getUnit(unitId);
-      var g = gradeSpeech(unit, rec.transcript);
-      if (state.user) Store.saveSpeaking(state.user.id, unitId, { transcript: rec.transcript, score: g.score, at: 0 });
-      renderRecResult(unitId, blob ? URL.createObjectURL(blob) : null, rec.transcript, g);
-      updateRecUI("done");
-    }, 650);
+    if (rec.recog) { try { rec.recog.stop(); } catch (e) {} } else { rec.recogEnded = true; }
+    if (rec.mediaRec && rec.mediaRec.state !== "inactive") { try { rec.mediaRec.stop(); } catch (e) { buildBlob(); } } else { buildBlob(); }
+    // rede de segurança: corrige mesmo se algum evento não disparar
+    if (rec.fallback) clearTimeout(rec.fallback);
+    rec.fallback = setTimeout(function () { rec.recogEnded = true; if (!rec.blobBuilt) buildBlob(); maybeFinalize(); }, 3500);
+  }
+  // Só corrige quando o áudio está pronto E o reconhecimento terminou (ou não existe).
+  function maybeFinalize() {
+    if (rec.finalized || !rec.blobBuilt) return;
+    if (rec.recogSupported && !rec.recogEnded) return;
+    rec.finalized = true;
+    if (rec.fallback) { clearTimeout(rec.fallback); rec.fallback = null; }
+    var unitId = rec.unitId, unit = Store.getUnit(unitId);
+    if (rec.blob && IDB.ok) IDB.put(speakingKey(unitId), rec.blob).catch(function () {});
+    var g = gradeSpeech(unit, rec.transcript);
+    g.recogSupported = rec.recogSupported; g.recogError = rec.recogError;
+    if (state.user) Store.saveSpeaking(state.user.id, unitId, { transcript: rec.transcript, score: g.score, at: 0 });
+    renderRecResult(unitId, rec.blob ? URL.createObjectURL(rec.blob) : null, rec.transcript, g);
+    updateRecUI("done");
   }
   function normWords(s) { return (s || "").toLowerCase().replace(/[^a-z0-9'\s]/g, " ").split(/\s+/).filter(Boolean); }
   function gradeSpeech(unit, transcript) {
@@ -276,10 +306,19 @@
     var box = $("#recResult"); if (!box) return;
     var html = url ? '<audio class="rec-audio mt-2" controls preload="metadata" src="' + url + '"></audio>' : "";
     if (!g.hasTranscript) {
-      html += '<div class="q__explain is-no mt-2"><b>Correção automática:</b> ' +
-        (hasRecognition()
-          ? "não entendi a fala. Fale mais perto do microfone, em inglês, e tente de novo."
-          : "este navegador não faz a correção automática — use o <b>Chrome</b> ou o <b>Edge</b>. Sua gravação foi salva acima.") + "</div>";
+      var why;
+      if (!g.recogSupported) {
+        why = "este navegador não faz a correção automática — use o <b>Chrome</b> ou o <b>Edge</b> (no computador ou no Android). Sua gravação foi salva acima.";
+      } else if (g.recogError === "not-allowed" || g.recogError === "service-not-allowed") {
+        why = "o navegador bloqueou o microfone. Clique no cadeado ao lado do endereço, permita o <b>Microfone</b> e tente de novo.";
+      } else if (g.recogError === "audio-capture") {
+        why = "não achei o microfone (ou ele está em uso por outro app). Feche outros apps que usam o microfone e tente de novo.";
+      } else if (g.recogError === "network") {
+        why = "o reconhecimento precisa de internet. Verifique a sua conexão e tente de novo.";
+      } else {
+        why = "não captei a fala. Fale <b>em inglês</b>, um pouco mais alto e perto do microfone, e clique em Parar só quando terminar. Tente de novo.";
+      }
+      html += '<div class="q__explain is-no mt-2"><b>Correção automática:</b> ' + why + "</div>";
     } else {
       var cls = g.level === "ok" ? "is-ok" : (g.level === "mid" ? "" : "is-no");
       html += '<div class="q__explain ' + cls + ' mt-2">' +
@@ -585,8 +624,10 @@
     var u = state.user, unit = Store.getUnit(unitId);
     if (!unit) return '<div class="view container">' + pageHead("Ops", "Unidade não encontrada.") + "</div>";
     var b = unitBest(u.id, unitId);
-    var vocab = (unit.vocabulary || []).map(function (v) {
-      return '<div class="vocab__item"><span class="vocab__en">' + esc(v.en) + '</span><span class="vocab__pt">' + esc(v.pt) + "</span></div>";
+    var vocab = (unit.vocabulary || []).map(function (v, i) {
+      return '<button type="button" class="vocab__item vocab__click" data-action="play-vocab" data-id="' + esc(unit.id) + '" data-i="' + i +
+        '" title="Ouvir a pronúncia"><span class="vocab__en"><span class="vocab__spk" aria-hidden="true">🔊</span> ' + esc(v.en) +
+        '</span><span class="vocab__pt">' + esc(v.pt) + "</span></button>";
     }).join("");
     var videos = (unit.videos || []).map(function (v) {
       return videoTile({ key: "u:" + unit.id + ":" + v.youtubeId, youtubeId: v.youtubeId, title: v.title, channel: v.channel, level: unit.level });
@@ -608,7 +649,8 @@
       var bRead = unitBest(u.id, unit.id + "#reading");
       readHtml = '<div class="section"><div class="card card--pad">' +
         '<div class="spread"><h2 style="font-size:17px">📖 Reading — ' + esc(rd.title) + "</h2>" +
-        '<button class="btn btn--sm btn--ghost" data-action="read-aloud" data-id="' + esc(unit.id) + '">🔊 Ouvir</button></div>' +
+        '<div class="row"><button class="btn btn--sm btn--ghost" data-action="read-aloud" data-id="' + esc(unit.id) + '">🔊 Ouvir</button>' +
+        '<button class="btn btn--sm btn--ghost" data-action="stop-audio" aria-label="Parar áudio">⏹ Parar</button></div></div>' +
         '<p class="reading-text mt-2">' + esc(rd.textEn) + "</p>" +
         (rd.textPt ? '<details class="mt-1"><summary>Ver tradução</summary><p class="muted mt-1">' + esc(rd.textPt) + "</p></details>" : "") +
         '<button class="btn btn--accent btn--sm mt-2" data-action="start-quiz" data-id="' + esc(unit.id) + '" data-kind="reading">📖 Exercícios de leitura' +
@@ -622,7 +664,7 @@
         "<div><h1>" + esc(unit.titlePt) + "</h1><p>" + esc(unit.title) + " · " + esc(unit.level) + "</p></div></div>" +
         '<p class="mt-2">' + esc(unit.description) + "</p></div>" +
 
-      '<div class="section mt-3"><div class="section__head"><h2>📖 Vocabulário</h2></div>' +
+      '<div class="section mt-3"><div class="section__head"><h2>📖 Vocabulário</h2><span class="dim" style="font-size:12px">🔊 toque para ouvir</span></div>' +
       '<div class="vocab">' + vocab + "</div></div>" +
 
       (videos ? '<div class="section"><div class="section__head"><h2>🎬 Vídeos</h2>' +
@@ -881,7 +923,18 @@
   function adminSettings() {
     var theme = Store.getTheme();
     function opt(v, label) { return '<option value="' + v + '"' + (theme === v ? " selected" : "") + ">" + label + "</option>"; }
-    return '<div class="view container">' + pageHead("Configurações", "Segurança, aparência e backup do conteúdo.") +
+    var syncOn = !!(GSE.Sync && GSE.Sync.enabled), syncReady = !!(GSE.Sync && GSE.Sync.ok);
+    var syncCard = '<div class="section"><div class="card card--pad">' +
+      "<h2 style=\"font-size:16px\">☁️ Sincronização</h2>" +
+      (syncOn
+        ? '<p class="mt-1" style="font-size:13.5px">' + (syncReady
+            ? '<b style="color:var(--success)">Ativa ✓</b> — o conteúdo que você escolhe e os acessos aparecem em <b>todos os aparelhos dos alunos em tempo real</b>, e o progresso da turma chega aqui automaticamente (Firebase).'
+            : 'Configurada (Firebase). Conectando… se não conectar, confirme no console do Firebase que o login <b>Anônimo</b> e o <b>Firestore</b> estão ativos.') + "</p>"
+        : '<p class="mt-1" style="font-size:13.5px">Desligada. O app está funcionando só neste aparelho. Para ligar a sincronização em tempo real, veja o <b>README</b> (seção Firebase).</p>') +
+      "</div></div>";
+    return '<div class="view container">' + pageHead("Configurações", "Sincronização, segurança, aparência e backup.") +
+
+      syncCard +
 
       '<div class="section"><div class="card card--pad">' +
         "<h2 style=\"font-size:16px\">🔒 Minha senha</h2>" +
@@ -898,7 +951,9 @@
 
       '<div class="section"><div class="card card--pad">' +
         "<h2 style=\"font-size:16px\">💾 Conteúdo & backup</h2>" +
-        '<p class="muted" style="font-size:13px">O conteúdo é salvo neste navegador. Exporte para levar suas unidades e vídeos para outro computador/celular, ou para compartilhar com os alunos.</p>' +
+        '<p class="muted" style="font-size:13px">' + (syncOn
+          ? "Com a sincronização ativa, o conteúdo já vai para todos os aparelhos automaticamente. A exportação serve para guardar uma cópia de segurança."
+          : "O conteúdo é salvo neste navegador. Exporte para levar suas unidades e vídeos para outro computador/celular, ou para compartilhar com os alunos.") + "</p>" +
         '<div class="row-wrap mt-2">' +
           '<button class="btn btn--ghost" data-action="export-content">⬇️ Exportar conteúdo</button>' +
           '<button class="btn btn--ghost" data-action="import-content">⬆️ Importar conteúdo</button>' +
@@ -913,8 +968,9 @@
         "</div></div></div>" +
 
       '<div class="section"><div class="card card--pad muted" style="font-size:12.5px">' +
-        "<b>Sobre este app:</b> é uma ferramenta de estudo que roda 100% no navegador (sem servidor). " +
-        "Os acessos e o progresso ficam salvos em cada aparelho. Para sincronizar entre vários celulares automaticamente, veja o <b>README</b> (seção Firebase)." +
+        (syncOn
+          ? "<b>Sobre este app:</b> os dados são sincronizados em tempo real pelo <b>Firebase</b> — o que você escolhe aqui aparece nos aparelhos dos alunos, e o progresso da turma vem para cá. Uma cópia também fica salva em cada aparelho, então o app funciona mesmo offline."
+          : "<b>Sobre este app:</b> é uma ferramenta de estudo que roda 100% no navegador. Os acessos e o progresso ficam salvos em cada aparelho. Para sincronizar automaticamente, veja o <b>README</b> (seção Firebase).") +
       "</div></div></div>";
   }
 
@@ -992,6 +1048,11 @@
       case "speak-example": {
         var su = Store.getUnit(t.getAttribute("data-id"));
         if (su && su.speaking) playClips([{ url: "assets/audio/" + su.id + "/speaking.mp3", text: su.speaking.example, s: "R" }], null, null);
+        break;
+      }
+      case "play-vocab": {
+        var vu = Store.getUnit(t.getAttribute("data-id")), vi = parseInt(t.getAttribute("data-i"), 10);
+        if (vu && vu.vocabulary && vu.vocabulary[vi]) playClips([{ url: "assets/audio/" + vu.id + "/vocab-" + vi + ".mp3", text: vu.vocabulary[vi].en, s: "R" }], null, null);
         break;
       }
       case "yt-search": {
@@ -1206,7 +1267,11 @@
   // Hooks usados pela camada de sincronização (Firebase), se ativa.
   var _refreshTimer = null;
   GSE.App = {
-    refresh: function () { if (_refreshTimer) return; _refreshTimer = setTimeout(function () { _refreshTimer = null; try { render(); } catch (e) {} }, 250); },
+    refresh: function () {
+      if (rec && rec.active) return; // não re-renderiza enquanto o aluno está gravando a fala
+      if (_refreshTimer) return;
+      _refreshTimer = setTimeout(function () { _refreshTimer = null; if (rec && rec.active) return; try { render(); } catch (e) {} }, 250);
+    },
     role: function () { return state.user ? state.user.role : null; },
     userId: function () { return state.user ? state.user.id : null; },
     toast: function (m, k) { try { toast(m, k); } catch (e) {} }
