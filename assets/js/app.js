@@ -129,7 +129,7 @@
     next();
   }
   // Versão dos áudios: evita que o navegador/CDN sirvam um mp3 antigo quando o conteúdo muda.
-  var AUDIO_VERSION = "6";
+  var AUDIO_VERSION = "7";
   function audioUrl(path) { return path + "?v=" + AUDIO_VERSION; }
   function playDialogue(unit) {
     if (!unit || !unit.dialogue || !unit.dialogue.lines) return;
@@ -248,12 +248,17 @@
     abortRec2(); abortSpeakRecog();
     sr.unitId = unitId; sr.transcript = ""; sr.active = true; sr.ended = false; sr.error = ""; sr.finalized = false;
     try {
-      var r = new SR(); r.lang = "en-US"; r.continuous = true; r.interimResults = true; r.maxAlternatives = 1;
-      // Reconstrói o texto do zero a cada evento (não acumula) e NÃO reinicia no silêncio → sem repetição.
+      // continuous=false → captura uma fala e para (evita o navegador re-emitir a frase e repetir).
+      var r = new SR(); r.lang = "en-US"; r.continuous = false; r.interimResults = true; r.maxAlternatives = 1;
       r.onresult = function (ev) {
-        var txt = "";
-        for (var i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript + " ";
-        sr.transcript = txt.replace(/\s+/g, " ").trim();
+        // junta os trechos ignorando repetições idênticas (alguns navegadores duplicam)
+        var parts = [], last = "";
+        for (var i = 0; i < ev.results.length; i++) {
+          var seg = (ev.results[i][0].transcript || "").trim();
+          if (!seg || seg.toLowerCase() === last.toLowerCase()) continue;
+          parts.push(seg); last = seg;
+        }
+        sr.transcript = parts.join(" ").replace(/\s+/g, " ").trim();
         var live = $("#speakLive"); if (live) live.textContent = sr.transcript ? ("… " + sr.transcript) : "";
       };
       r.onerror = function (ev) { sr.error = (ev && ev.error) || "error"; };

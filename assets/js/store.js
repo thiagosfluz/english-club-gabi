@@ -21,7 +21,7 @@ window.GSE = window.GSE || {};
     theme: "gse.theme",
     ver: "gse.version"
   };
-  var DATA_VERSION = 5; // v5: vocabulário completo + áudio por palavra, diálogos da apostila, desafio final
+  var DATA_VERSION = 6; // v6: vocabulário resumido + áudio por palavra corrigido; conteúdo versionado p/ sync
 
   /* ---------- low-level JSON storage ---------- */
   function read(key, fallback) {
@@ -164,9 +164,11 @@ window.GSE = window.GSE || {};
       units: units,
       extraVideos: [],                 // teacher-added standalone videos
       featured: units.slice(0, 3).map(function (u) { return u.id; }), // first units featured by default
+      seedVersion: (GSE.SEED && GSE.SEED.version) || 0, // versão do conteúdo (para o sync saber o que é mais novo)
       updatedAt: 0
     };
   }
+  function seedVersion() { return (GSE.SEED && GSE.SEED.version) || 0; }
   function getContent() {
     var c = read(KEY.content, null);
     if (!c) { c = defaultContent(); write(KEY.content, c); }
@@ -422,7 +424,7 @@ window.GSE = window.GSE || {};
     exportAll: exportAll, exportContentOnly: exportContentOnly, importContent: importContent,
     resetAll: resetAll, resetContentToSeed: resetContentToSeed,
     // sync helpers
-    writeLocalOnly: writeLocalOnly, read: read,
+    writeLocalOnly: writeLocalOnly, read: read, seedVersion: seedVersion,
     // lifecycle
     init: init, uid: uid
   };

@@ -133,12 +133,22 @@ window.GSE = window.GSE || {};
 
   function applyRemote(key, json) {
     if (localStorage.getItem(key) === json) return;
+    var val;
+    try { val = JSON.parse(json); } catch (e) { return; }
+    // Conteúdo: só aceita do Firestore se a versão for igual ou mais nova que a do app.
+    if (key === KEY_CONTENT) {
+      var localSeed = (GSE.Store && GSE.Store.seedVersion) ? GSE.Store.seedVersion() : 0;
+      var remoteSeed = (val && val.seedVersion) || 0;
+      if (remoteSeed < localSeed) {
+        // Firestore está com conteúdo antigo → não aplica. Se for a professora, reenvia o novo.
+        if (GSE.App && GSE.App.role && GSE.App.role() === "admin") {
+          var raw = localStorage.getItem(KEY_CONTENT); if (raw) pushDoc(docId(KEY_CONTENT), raw);
+        }
+        return;
+      }
+    }
     applying = true;
-    try {
-      var val = JSON.parse(json);
-      if (GSE.Store && GSE.Store.writeLocalOnly) GSE.Store.writeLocalOnly(key, val);
-      else localStorage.setItem(key, json);
-    } catch (e) {}
+    try { if (GSE.Store && GSE.Store.writeLocalOnly) GSE.Store.writeLocalOnly(key, val); else localStorage.setItem(key, json); } catch (e) {}
     applying = false;
     if (GSE.App && GSE.App.refresh) GSE.App.refresh();
   }

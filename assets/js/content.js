@@ -30,110 +30,6 @@ window.GSE.SEED = {
       "searchQuery": "english alphabet and greetings for beginners",
       "vocabulary": [
         {
-          "en": "A",
-          "pt": "letra A — \"êi\""
-        },
-        {
-          "en": "B",
-          "pt": "letra B — \"bî\""
-        },
-        {
-          "en": "C",
-          "pt": "letra C — \"sî\""
-        },
-        {
-          "en": "D",
-          "pt": "letra D — \"dî\""
-        },
-        {
-          "en": "E",
-          "pt": "letra E — \"î\""
-        },
-        {
-          "en": "F",
-          "pt": "letra F — \"éf\""
-        },
-        {
-          "en": "G",
-          "pt": "letra G — \"djî\""
-        },
-        {
-          "en": "H",
-          "pt": "letra H — \"êitch\""
-        },
-        {
-          "en": "I",
-          "pt": "letra I — \"ái\""
-        },
-        {
-          "en": "J",
-          "pt": "letra J — \"djêi\""
-        },
-        {
-          "en": "K",
-          "pt": "letra K — \"kêi\""
-        },
-        {
-          "en": "L",
-          "pt": "letra L — \"él\""
-        },
-        {
-          "en": "M",
-          "pt": "letra M — \"ém\""
-        },
-        {
-          "en": "N",
-          "pt": "letra N — \"én\""
-        },
-        {
-          "en": "O",
-          "pt": "letra O — \"ôu\""
-        },
-        {
-          "en": "P",
-          "pt": "letra P — \"pî\""
-        },
-        {
-          "en": "Q",
-          "pt": "letra Q — \"kiú\""
-        },
-        {
-          "en": "R",
-          "pt": "letra R — \"ár\""
-        },
-        {
-          "en": "S",
-          "pt": "letra S — \"és\""
-        },
-        {
-          "en": "T",
-          "pt": "letra T — \"tî\""
-        },
-        {
-          "en": "U",
-          "pt": "letra U — \"iú\""
-        },
-        {
-          "en": "V",
-          "pt": "letra V — \"vî\""
-        },
-        {
-          "en": "W",
-          "pt": "letra W — \"dâbliu\""
-        },
-        {
-          "en": "X",
-          "pt": "letra X — \"éks\""
-        },
-        {
-          "en": "Y",
-          "pt": "letra Y — \"uái\""
-        },
-        {
-          "en": "Z",
-          "pt": "letra Z — \"zî\""
-        },
-        {
           "en": "Hello / Hi",
           "pt": "Olá / Oi"
         },
@@ -182,18 +78,6 @@ window.GSE.SEED = {
           "pt": "Até amanhã"
         },
         {
-          "en": "PPCP Analyst",
-          "pt": "Analista de PPCP"
-        },
-        {
-          "en": "Production Planning and Control",
-          "pt": "Planejamento, Programação e Controle da Produção"
-        },
-        {
-          "en": "Shipping Coordinator",
-          "pt": "Coordenador(a) de Expedição"
-        },
-        {
           "en": "Manager",
           "pt": "Gerente"
         },
@@ -206,7 +90,15 @@ window.GSE.SEED = {
           "pt": "Colega de trabalho"
         },
         {
-          "en": "Department / Sector",
+          "en": "PPCP Analyst",
+          "pt": "Analista de PPCP"
+        },
+        {
+          "en": "Shipping Coordinator",
+          "pt": "Coordenador(a) de Expedição"
+        },
+        {
+          "en": "Department",
           "pt": "Departamento / Setor"
         },
         {
@@ -473,42 +365,6 @@ window.GSE.SEED = {
           "pt": "10"
         },
         {
-          "en": "eleven",
-          "pt": "11"
-        },
-        {
-          "en": "twelve",
-          "pt": "12"
-        },
-        {
-          "en": "thirteen",
-          "pt": "13"
-        },
-        {
-          "en": "fourteen",
-          "pt": "14"
-        },
-        {
-          "en": "fifteen",
-          "pt": "15"
-        },
-        {
-          "en": "sixteen",
-          "pt": "16"
-        },
-        {
-          "en": "seventeen",
-          "pt": "17"
-        },
-        {
-          "en": "eighteen",
-          "pt": "18"
-        },
-        {
-          "en": "nineteen",
-          "pt": "19"
-        },
-        {
           "en": "twenty",
           "pt": "20"
         },
@@ -517,80 +373,40 @@ window.GSE.SEED = {
           "pt": "30"
         },
         {
-          "en": "forty",
-          "pt": "40"
-        },
-        {
-          "en": "fifty",
-          "pt": "50"
-        },
-        {
-          "en": "sixty",
-          "pt": "60"
-        },
-        {
-          "en": "seventy",
-          "pt": "70"
-        },
-        {
-          "en": "eighty",
-          "pt": "80"
-        },
-        {
-          "en": "ninety",
-          "pt": "90"
-        },
-        {
           "en": "one hundred",
-          "pt": "100 (cem)"
+          "pt": "cem"
         },
         {
           "en": "one thousand",
-          "pt": "1.000 (mil)"
+          "pt": "mil"
         },
         {
           "en": "one million",
-          "pt": "1.000.000 (um milhão)"
+          "pt": "um milhão"
         },
         {
-          "en": "Unit(s)",
-          "pt": "Unidade(s)"
+          "en": "box",
+          "pt": "caixa"
         },
         {
-          "en": "Piece(s)",
-          "pt": "Peça(s)"
+          "en": "piece",
+          "pt": "peça"
         },
         {
-          "en": "Box(es)",
-          "pt": "Caixa(s)"
+          "en": "pallet",
+          "pt": "palete"
         },
         {
-          "en": "Pallet",
-          "pt": "Palete"
+          "en": "quantity",
+          "pt": "quantidade"
         },
         {
-          "en": "Quantity",
-          "pt": "Quantidade"
+          "en": "order",
+          "pt": "pedido"
         },
         {
-          "en": "Total",
-          "pt": "Total"
-        },
-        {
-          "en": "Weight",
-          "pt": "Peso"
-        },
-        {
-          "en": "Order",
-          "pt": "Pedido"
-        },
-        {
-          "en": "Stock / Inventory",
-          "pt": "Estoque"
-        },
-        {
-          "en": "Item number",
-          "pt": "Número do item / código"
+          "en": "weight",
+          "pt": "peso"
         }
       ],
       "videos": [
@@ -877,88 +693,20 @@ window.GSE.SEED = {
           "pt": "dezembro"
         },
         {
-          "en": "What time is it?",
-          "pt": "Que horas são?"
+          "en": "shift",
+          "pt": "turno"
         },
         {
-          "en": "It's seven o'clock",
-          "pt": "São sete em ponto"
+          "en": "deadline",
+          "pt": "prazo final"
         },
         {
-          "en": "half past seven",
-          "pt": "sete e meia"
+          "en": "meeting",
+          "pt": "reunião"
         },
         {
-          "en": "a quarter past seven",
-          "pt": "sete e quinze"
-        },
-        {
-          "en": "a quarter to eight",
-          "pt": "quinze para as oito"
-        },
-        {
-          "en": "a.m.",
-          "pt": "manhã"
-        },
-        {
-          "en": "p.m.",
-          "pt": "tarde-noite"
-        },
-        {
-          "en": "noon",
-          "pt": "meio-dia"
-        },
-        {
-          "en": "midnight",
-          "pt": "meia-noite"
-        },
-        {
-          "en": "Schedule",
-          "pt": "Cronograma / agenda"
-        },
-        {
-          "en": "Shift",
-          "pt": "Turno"
-        },
-        {
-          "en": "Morning shift",
-          "pt": "Turno da manhã"
-        },
-        {
-          "en": "Night shift",
-          "pt": "Turno da noite"
-        },
-        {
-          "en": "Working hours",
-          "pt": "Horário de trabalho"
-        },
-        {
-          "en": "Deadline",
-          "pt": "Prazo final"
-        },
-        {
-          "en": "Delivery date",
-          "pt": "Data de entrega"
-        },
-        {
-          "en": "Meeting",
-          "pt": "Reunião"
-        },
-        {
-          "en": "Break",
-          "pt": "Intervalo / pausa"
-        },
-        {
-          "en": "On time",
-          "pt": "No prazo"
-        },
-        {
-          "en": "Late",
-          "pt": "Atrasado"
-        },
-        {
-          "en": "Overtime",
-          "pt": "Hora extra"
+          "en": "overtime",
+          "pt": "hora extra"
         }
       ],
       "videos": [
@@ -1170,36 +918,28 @@ window.GSE.SEED = {
       "searchQuery": "verb to be am is are personal information english beginners",
       "vocabulary": [
         {
-          "en": "I am (I'm)",
+          "en": "I am",
           "pt": "eu sou / estou"
         },
         {
-          "en": "you are (you're)",
+          "en": "you are",
           "pt": "você é / está"
         },
         {
-          "en": "he is (he's)",
+          "en": "he is",
           "pt": "ele é / está"
         },
         {
-          "en": "she is (she's)",
+          "en": "she is",
           "pt": "ela é / está"
         },
         {
-          "en": "it is (it's)",
-          "pt": "isto é / está"
-        },
-        {
-          "en": "we are (we're)",
+          "en": "we are",
           "pt": "nós somos / estamos"
         },
         {
-          "en": "they are (they're)",
+          "en": "they are",
           "pt": "eles são / estão"
-        },
-        {
-          "en": "I'm not",
-          "pt": "eu não sou / estou"
         },
         {
           "en": "isn't",
@@ -1210,14 +950,6 @@ window.GSE.SEED = {
           "pt": "não são / estão"
         },
         {
-          "en": "Are you...?",
-          "pt": "Você é...? / está...?"
-        },
-        {
-          "en": "Is he...?",
-          "pt": "Ele é...? / está...?"
-        },
-        {
           "en": "full name",
           "pt": "nome completo"
         },
@@ -1226,7 +958,7 @@ window.GSE.SEED = {
           "pt": "primeiro nome"
         },
         {
-          "en": "last name / surname",
+          "en": "surname",
           "pt": "sobrenome"
         },
         {
@@ -1238,55 +970,23 @@ window.GSE.SEED = {
           "pt": "nacionalidade"
         },
         {
-          "en": "date of birth",
-          "pt": "data de nascimento"
+          "en": "job",
+          "pt": "cargo / função"
         },
         {
-          "en": "address",
-          "pt": "endereço"
+          "en": "PPCP Analyst",
+          "pt": "Analista de PPCP"
         },
         {
-          "en": "phone number",
-          "pt": "número de telefone"
+          "en": "Shipping Coordinator",
+          "pt": "Coordenador(a) de Expedição"
         },
         {
-          "en": "e-mail",
-          "pt": "e-mail"
+          "en": "Manager",
+          "pt": "Gerente"
         },
         {
-          "en": "marital status",
-          "pt": "estado civil"
-        },
-        {
-          "en": "single / married",
-          "pt": "solteiro(a) / casado(a)"
-        },
-        {
-          "en": "department / section",
-          "pt": "departamento / setor"
-        },
-        {
-          "en": "I work in / at...",
-          "pt": "Eu trabalho em..."
-        },
-        {
-          "en": "I am responsible for...",
-          "pt": "Eu sou responsável por..."
-        },
-        {
-          "en": "My position is...",
-          "pt": "Meu cargo é..."
-        },
-        {
-          "en": "I am in charge of...",
-          "pt": "Estou encarregado(a) de..."
-        },
-        {
-          "en": "I report to...",
-          "pt": "Eu me reporto a..."
-        },
-        {
-          "en": "Team / Staff",
+          "en": "Team",
           "pt": "Equipe"
         },
         {
@@ -1512,7 +1212,7 @@ window.GSE.SEED = {
         },
         {
           "en": "to get up",
-          "pt": "levantar da cama"
+          "pt": "levantar"
         },
         {
           "en": "to have breakfast",
@@ -1536,31 +1236,11 @@ window.GSE.SEED = {
         },
         {
           "en": "to check",
-          "pt": "verificar / conferir"
+          "pt": "conferir"
         },
         {
           "en": "to send",
           "pt": "enviar"
-        },
-        {
-          "en": "to have lunch",
-          "pt": "almoçar"
-        },
-        {
-          "en": "to come back home",
-          "pt": "voltar para casa"
-        },
-        {
-          "en": "to study",
-          "pt": "estudar"
-        },
-        {
-          "en": "to watch TV",
-          "pt": "assistir TV"
-        },
-        {
-          "en": "to go to bed",
-          "pt": "ir dormir"
         },
         {
           "en": "always",
@@ -1571,32 +1251,16 @@ window.GSE.SEED = {
           "pt": "geralmente"
         },
         {
-          "en": "often",
-          "pt": "frequentemente"
-        },
-        {
-          "en": "frequently",
-          "pt": "com frequência"
-        },
-        {
           "en": "sometimes",
           "pt": "às vezes"
         },
         {
-          "en": "occasionally",
-          "pt": "ocasionalmente"
-        },
-        {
-          "en": "rarely",
-          "pt": "raramente"
-        },
-        {
-          "en": "hardly ever",
-          "pt": "quase nunca"
-        },
-        {
           "en": "never",
           "pt": "nunca"
+        },
+        {
+          "en": "every day",
+          "pt": "todos os dias"
         },
         {
           "en": "to plan",
@@ -1616,35 +1280,11 @@ window.GSE.SEED = {
         },
         {
           "en": "to ship",
-          "pt": "expedir / despachar"
+          "pt": "expedir"
         },
         {
-          "en": "to schedule",
-          "pt": "agendar / programar"
-        },
-        {
-          "en": "to report",
-          "pt": "reportar / relatar"
-        },
-        {
-          "en": "Task",
-          "pt": "Tarefa"
-        },
-        {
-          "en": "Report",
-          "pt": "Relatório"
-        },
-        {
-          "en": "Production order",
-          "pt": "Ordem de produção"
-        },
-        {
-          "en": "Routine",
-          "pt": "Rotina"
-        },
-        {
-          "en": "Daily / Weekly",
-          "pt": "Diário / semanal"
+          "en": "production order",
+          "pt": "ordem de produção"
         }
       ],
       "videos": [
@@ -1864,20 +1504,12 @@ window.GSE.SEED = {
           "pt": "Há (plural)"
         },
         {
-          "en": "There isn't",
-          "pt": "Não há (singular)"
+          "en": "isn't",
+          "pt": "não há"
         },
         {
-          "en": "There aren't",
-          "pt": "Não há (plural)"
-        },
-        {
-          "en": "Is there...?",
-          "pt": "Há...? (singular)"
-        },
-        {
-          "en": "Are there...?",
-          "pt": "Há...? (plural)"
+          "en": "Is there?",
+          "pt": "Há...?"
         },
         {
           "en": "in",
@@ -1885,31 +1517,19 @@ window.GSE.SEED = {
         },
         {
           "en": "on",
-          "pt": "sobre (com contato)"
+          "pt": "sobre"
         },
         {
           "en": "at",
-          "pt": "em (ponto específico)"
+          "pt": "em (ponto)"
         },
         {
           "en": "under",
-          "pt": "embaixo de"
-        },
-        {
-          "en": "above",
-          "pt": "acima (sem contato)"
-        },
-        {
-          "en": "below",
-          "pt": "abaixo de"
-        },
-        {
-          "en": "over",
-          "pt": "por cima de"
+          "pt": "embaixo"
         },
         {
           "en": "next to",
-          "pt": "ao lado de"
+          "pt": "ao lado"
         },
         {
           "en": "between",
@@ -1921,51 +1541,35 @@ window.GSE.SEED = {
         },
         {
           "en": "behind",
-          "pt": "atrás de"
+          "pt": "atrás"
         },
         {
-          "en": "near",
-          "pt": "perto de"
+          "en": "warehouse",
+          "pt": "armazém"
         },
         {
-          "en": "Warehouse",
-          "pt": "Armazém / galpão"
+          "en": "shop floor",
+          "pt": "chão de fábrica"
         },
         {
-          "en": "Shop floor",
-          "pt": "Chão de fábrica"
+          "en": "office",
+          "pt": "escritório"
         },
         {
-          "en": "Office",
-          "pt": "Escritório"
+          "en": "forklift",
+          "pt": "empilhadeira"
         },
         {
-          "en": "Loading dock",
-          "pt": "Doca de carga"
+          "en": "shelf",
+          "pt": "prateleira"
         },
         {
-          "en": "Forklift",
-          "pt": "Empilhadeira"
+          "en": "truck",
+          "pt": "caminhão"
         },
         {
-          "en": "Shelf / Rack",
-          "pt": "Prateleira / rack"
-        },
-        {
-          "en": "Conveyor belt",
-          "pt": "Esteira transportadora"
-        },
-        {
-          "en": "Production line",
-          "pt": "Linha de produção"
-        },
-        {
-          "en": "Truck",
-          "pt": "Caminhão"
-        },
-        {
-          "en": "Equipment",
-          "pt": "Equipamento"
+          "en": "production line",
+          "pt": "linha de produção"
         }
       ],
       "videos": [
@@ -2176,116 +1780,52 @@ window.GSE.SEED = {
       "searchQuery": "english adjectives colors describing things for beginners",
       "vocabulary": [
         {
-          "en": "big / small",
-          "pt": "grande / pequeno"
+          "en": "big",
+          "pt": "grande"
         },
         {
-          "en": "new / old",
-          "pt": "novo / velho"
+          "en": "small",
+          "pt": "pequeno"
         },
         {
-          "en": "fast / slow",
-          "pt": "rápido / lento"
+          "en": "new",
+          "pt": "novo"
         },
         {
-          "en": "heavy / light",
-          "pt": "pesado / leve"
+          "en": "old",
+          "pt": "velho"
         },
         {
-          "en": "good / bad",
-          "pt": "bom / ruim"
+          "en": "fast",
+          "pt": "rápido"
         },
         {
-          "en": "easy / difficult",
-          "pt": "fácil / difícil"
+          "en": "slow",
+          "pt": "lento"
         },
         {
-          "en": "long / short",
-          "pt": "comprido / curto"
+          "en": "heavy",
+          "pt": "pesado"
         },
         {
-          "en": "thick / thin",
-          "pt": "grosso / fino"
+          "en": "light",
+          "pt": "leve"
         },
         {
-          "en": "strong / weak",
-          "pt": "forte / fraco"
+          "en": "clean",
+          "pt": "limpo"
         },
         {
-          "en": "clean / dirty",
-          "pt": "limpo / sujo"
+          "en": "dirty",
+          "pt": "sujo"
         },
         {
-          "en": "safe / dangerous",
-          "pt": "seguro / perigoso"
+          "en": "good",
+          "pt": "bom"
         },
         {
-          "en": "expensive / cheap",
-          "pt": "caro / barato"
-        },
-        {
-          "en": "full / empty",
-          "pt": "cheio / vazio"
-        },
-        {
-          "en": "hot / cold",
-          "pt": "quente / frio"
-        },
-        {
-          "en": "friendly",
-          "pt": "simpático(a)"
-        },
-        {
-          "en": "polite",
-          "pt": "educado(a)"
-        },
-        {
-          "en": "hardworking",
-          "pt": "trabalhador(a)"
-        },
-        {
-          "en": "experienced",
-          "pt": "experiente"
-        },
-        {
-          "en": "careful",
-          "pt": "cuidadoso(a)"
-        },
-        {
-          "en": "smart",
-          "pt": "inteligente"
-        },
-        {
-          "en": "busy",
-          "pt": "ocupado(a)"
-        },
-        {
-          "en": "tired",
-          "pt": "cansado(a)"
-        },
-        {
-          "en": "very",
-          "pt": "muito"
-        },
-        {
-          "en": "so",
-          "pt": "tão"
-        },
-        {
-          "en": "really",
-          "pt": "realmente"
-        },
-        {
-          "en": "quite",
-          "pt": "bastante"
-        },
-        {
-          "en": "a little / a bit",
-          "pt": "um pouco"
-        },
-        {
-          "en": "too",
-          "pt": "demais"
+          "en": "bad",
+          "pt": "ruim"
         },
         {
           "en": "red",
@@ -2312,88 +1852,20 @@ window.GSE.SEED = {
           "pt": "branco"
         },
         {
-          "en": "grey",
-          "pt": "cinza"
+          "en": "very",
+          "pt": "muito"
         },
         {
-          "en": "brown",
-          "pt": "marrom"
+          "en": "too",
+          "pt": "demais"
         },
         {
-          "en": "orange",
-          "pt": "laranja"
+          "en": "damaged",
+          "pt": "danificado"
         },
         {
-          "en": "purple",
-          "pt": "roxo"
-        },
-        {
-          "en": "pink",
-          "pt": "rosa"
-        },
-        {
-          "en": "silver",
-          "pt": "prateado"
-        },
-        {
-          "en": "Quality",
-          "pt": "Qualidade"
-        },
-        {
-          "en": "Defect",
-          "pt": "Defeito"
-        },
-        {
-          "en": "Sample",
-          "pt": "Amostra"
-        },
-        {
-          "en": "Product",
-          "pt": "Produto"
-        },
-        {
-          "en": "Size",
-          "pt": "Tamanho"
-        },
-        {
-          "en": "Length",
-          "pt": "Comprimento"
-        },
-        {
-          "en": "Thickness",
-          "pt": "Espessura"
-        },
-        {
-          "en": "Cable / Wire",
-          "pt": "Cabo / fio"
-        },
-        {
-          "en": "Damaged",
-          "pt": "Danificado"
-        },
-        {
-          "en": "Approved / Rejected",
-          "pt": "Aprovado / reprovado"
-        },
-        {
-          "en": "Standard",
-          "pt": "Padrão"
-        },
-        {
-          "en": "Label",
-          "pt": "Etiqueta / rótulo"
-        },
-        {
-          "en": "Packaging",
-          "pt": "Embalagem"
-        },
-        {
-          "en": "Packing",
-          "pt": "Empacotamento"
-        },
-        {
-          "en": "Packing list",
-          "pt": "Romaneio (lista da carga)"
+          "en": "defect",
+          "pt": "defeito"
         }
       ],
       "videos": [
@@ -2600,14 +2072,6 @@ window.GSE.SEED = {
       "searchQuery": "present continuous am is are ing english beginners",
       "vocabulary": [
         {
-          "en": "am / is / are + -ing",
-          "pt": "estou/está/estão + -ndo"
-        },
-        {
-          "en": "isn't / aren't + -ing",
-          "pt": "não está / não estão + -ndo"
-        },
-        {
           "en": "now",
           "pt": "agora"
         },
@@ -2618,18 +2082,6 @@ window.GSE.SEED = {
         {
           "en": "at the moment",
           "pt": "no momento"
-        },
-        {
-          "en": "currently",
-          "pt": "atualmente"
-        },
-        {
-          "en": "today",
-          "pt": "hoje"
-        },
-        {
-          "en": "this week",
-          "pt": "esta semana"
         },
         {
           "en": "to load",
@@ -2648,11 +2100,7 @@ window.GSE.SEED = {
           "pt": "mover"
         },
         {
-          "en": "to wait",
-          "pt": "esperar"
-        },
-        {
-          "en": "to fix / repair",
+          "en": "to fix",
           "pt": "consertar"
         },
         {
@@ -2664,36 +2112,32 @@ window.GSE.SEED = {
           "pt": "escrever"
         },
         {
-          "en": "to talk",
-          "pt": "falar / conversar"
-        },
-        {
           "en": "to run",
-          "pt": "operar (máquina) / correr"
+          "pt": "operar (máquina)"
         },
         {
           "en": "to stop",
           "pt": "parar"
         },
         {
-          "en": "In progress",
-          "pt": "Em andamento"
+          "en": "shipment",
+          "pt": "remessa"
         },
         {
-          "en": "Shipment",
-          "pt": "Remessa / carregamento"
+          "en": "production",
+          "pt": "produção"
         },
         {
-          "en": "Production",
-          "pt": "Produção"
+          "en": "in progress",
+          "pt": "em andamento"
         },
         {
-          "en": "Delay",
-          "pt": "Atraso"
+          "en": "delay",
+          "pt": "atraso"
         },
         {
-          "en": "Downtime",
-          "pt": "Parada de máquina"
+          "en": "downtime",
+          "pt": "parada de máquina"
         }
       ],
       "videos": [
@@ -2900,11 +2344,11 @@ window.GSE.SEED = {
       "vocabulary": [
         {
           "en": "was",
-          "pt": "era / estava (I/he/she/it)"
+          "pt": "era / estava"
         },
         {
           "en": "were",
-          "pt": "eram / estavam (you/we/they)"
+          "pt": "eram / estavam"
         },
         {
           "en": "worked",
@@ -2943,14 +2387,6 @@ window.GSE.SEED = {
           "pt": "semana passada"
         },
         {
-          "en": "last month",
-          "pt": "mês passado"
-        },
-        {
-          "en": "...days ago",
-          "pt": "...dias atrás"
-        },
-        {
           "en": "arrived",
           "pt": "chegou"
         },
@@ -2959,36 +2395,20 @@ window.GSE.SEED = {
           "pt": "terminou"
         },
         {
-          "en": "Arrived / Delivered",
-          "pt": "Chegou / entregue"
+          "en": "shipped",
+          "pt": "expediu"
         },
         {
-          "en": "Shipped",
-          "pt": "Expediu / despachou"
+          "en": "delayed",
+          "pt": "atrasado"
         },
         {
-          "en": "Delayed",
-          "pt": "Atrasado / adiado"
+          "en": "completed",
+          "pt": "concluído"
         },
         {
-          "en": "Completed",
-          "pt": "Concluído"
-        },
-        {
-          "en": "Last shipment",
-          "pt": "Última remessa"
-        },
-        {
-          "en": "Previous order",
-          "pt": "Pedido anterior"
-        },
-        {
-          "en": "Backorder",
-          "pt": "Pedido em atraso / pendente"
-        },
-        {
-          "en": "On schedule",
-          "pt": "Dentro do cronograma"
+          "en": "on schedule",
+          "pt": "dentro do cronograma"
         }
       ],
       "videos": [
@@ -3242,24 +2662,20 @@ window.GSE.SEED = {
           "pt": "Claro"
         },
         {
-          "en": "I'll check and call you back",
-          "pt": "Vou verificar e te retorno"
-        },
-        {
           "en": "Please confirm",
           "pt": "Por favor, confirme"
         },
         {
-          "en": "As soon as possible (ASAP)",
+          "en": "As soon as possible",
           "pt": "O mais rápido possível"
         },
         {
           "en": "Let me know",
-          "pt": "Me avise / me informe"
+          "pt": "Me avise"
         },
         {
           "en": "Best regards",
-          "pt": "Atenciosamente (e-mail)"
+          "pt": "Atenciosamente"
         }
       ],
       "videos": [
@@ -3455,5 +2871,6 @@ window.GSE.SEED = {
         "prompt": "Grave você fazendo 2 pedidos educados em inglês (Can you help me, please? / Could you send the report?)."
       }
     }
-  ]
+  ],
+  "version": 6
 };
